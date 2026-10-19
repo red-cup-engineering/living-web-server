@@ -21,3 +21,7 @@ The package is currently private source in the Web Engineering corpus, not a
 published registry artifact or an installed public application. Its native tests
 require the stated package closure. Promoting the source into a standalone
 package owner must preserve its export and its consumers.
+
+## Requested optional Markdown representation — source requirement, not implemented
+
+The [Living Web Server source-owned requirement](data/records/requirements-records/living-web-server-negotiates-authorized-markdown.json) and [original issue #1](https://github.com/red-cup-engineering/living-web-server/issues/1) call for **opt-in** conversion of eligible, independently authorized HTML pages to Markdown when a client selects `Accept: text/markdown`. The Cloudflare Markdown for Agents comparator is documented at [Cloudflare](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) (Oct 9, 2026). This existing application must **reuse** TUFTE's original representation producer and the shared HTTP negotiation, rather than add its own Accept parser, cache store or data-access privilege. Preserve existing HTML/JSON responses and authorize every original live source read; absence of a publisher Content-Signal is *not* permission to assert AI training rights. The six independent acceptance cells in the new requirement are proposed tests and **currently do not establish implemented behavior**. The broader Web Engineering requirement and native requirement-decomposition gap are separately source-owned.

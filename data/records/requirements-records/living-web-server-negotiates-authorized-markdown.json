@@ -1,0 +1,83 @@
+{
+  "id": "living-web-server-negotiates-authorized-markdown",
+  "name": "Living Web Server optionally serves authorized HTML pages as Markdown and meets then beats Cloudflare Markdown for Agents",
+  "kind": "requirement",
+  "raised-by": "emsenn",
+  "asks": "New thing: We want to fie an issue so that our living web server can optionally do this: Automatically convert HTML to Markdown for requests that use content negotiation headers (Accept: text/markdown)\n\nThis is something Cloudflare's pro plan does: we want to add a Requirement to Living Web Server to meet-then-beat the relevant parts of Cloudflare's offerings, an I suppose we should add to computer-web-systems-engineering-services-section as a requirement to meet then beat cloudflare, generally. (I don't think we currently have a \"break a requirement down into subrequirements so that its fulfillment can be met in chunks, and that's definitely something we will have to do. eventually, so lets start earning toward that too.)",
+  "met-when": [
+    {
+      "cell": "living-web-server-negotiates-authorized-markdown:authorized-opt-in",
+      "target": "held",
+      "command": "node --test test/markdown-authorization.test.mjs",
+      "expected-exit": 0
+    },
+    {
+      "cell": "living-web-server-negotiates-authorized-markdown:weighted-http-negotiation",
+      "target": "held",
+      "command": "node --test test/markdown-negotiation.test.mjs",
+      "expected-exit": 0
+    },
+    {
+      "cell": "living-web-server-negotiates-authorized-markdown:semantic-fidelity-and-safety",
+      "target": "held",
+      "command": "node --test test/markdown-fidelity.test.mjs",
+      "expected-exit": 0
+    },
+    {
+      "cell": "living-web-server-negotiates-authorized-markdown:headers-policy-and-cache",
+      "target": "held",
+      "command": "node --test test/markdown-headers.test.mjs",
+      "expected-exit": 0
+    },
+    {
+      "cell": "living-web-server-negotiates-authorized-markdown:bounded-failures",
+      "target": "held",
+      "command": "node --test test/markdown-bounds.test.mjs",
+      "expected-exit": 0
+    },
+    {
+      "cell": "living-web-server-negotiates-authorized-markdown:independent-consumer",
+      "target": "held",
+      "command": "node --test test/markdown-independent-receiving.test.mjs",
+      "expected-exit": 0
+    }
+  ],
+  "x-provenance": {
+    "recorded-on": "2026-10-19",
+    "raised-in": "https://github.com/red-cup-engineering/living-web-server/issues/1",
+    "original-words": "asks retains exact Leader demand; source notes below are engineering-derived acceptance, not additional Leader quotations",
+    "comparison": {
+      "provider": "Cloudflare",
+      "product": "Markdown for Agents",
+      "baseline-as-of": "2026-10-09",
+      "source": "https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/",
+      "subscription": "Pro/Business/Enterprise, also SSL for SaaS",
+      "source-html-limit-bytes": 6291456,
+      "house-scope": "Optional, standards-compliant, explicitly authorized same-URI Markdown projection, independent of a third-party Pro subscription; outperform only on independently measured same-job client value."
+    },
+    "source-owners": {
+      "living-application": "https://github.com/red-cup-engineering/living-web-server/blob/main/src/application.mjs",
+      "original-representation": "https://github.com/red-cup-engineering/web-page-tiling-engine/blob/main/src/tufte-application.mjs",
+      "original-http": "https://github.com/red-cup-engineering/computer-web-server",
+      "original-web-requirements": "https://github.com/red-cup-engineering/computer-web-engineering-services-section"
+    },
+    "provisional-subrequirement-slices": [
+      "living-web-server-negotiates-authorized-markdown:authorized-opt-in",
+      "living-web-server-negotiates-authorized-markdown:weighted-http-negotiation",
+      "living-web-server-negotiates-authorized-markdown:semantic-fidelity-and-safety",
+      "living-web-server-negotiates-authorized-markdown:headers-policy-and-cache",
+      "living-web-server-negotiates-authorized-markdown:bounded-failures",
+      "living-web-server-negotiates-authorized-markdown:independent-consumer"
+    ],
+    "quality-gates": [
+      "Opt-in off by default; source/public-read authorization before every source read and conversion; never use Accept as permission",
+      "Weighted RFC 9110 Accept selection, HEAD/OPTIONS and existing HTML/JSON/406 nonregression",
+      "Preserve original authorized content, working links, headings, code, sanitized metadata; no fabricated JSON-LD or script execution",
+      "Vary Accept, preserve explicit content-signal and access/security/cache policy; never automatically assert ai-train=yes; neutralize invalidated body headers",
+      "Bound decompressed source, output and compute to independently governed host budget; fail closed on sensitive/unsupported representations",
+      "Independent agent and second lawful application receiving; prove MEET before any specific real-world BEAT; no self-reported revenue"
+    ],
+    "decomposition-contract": "Current emsenn/schema/requirement has no first-class parent/subrequirement relation; these acceptance cells are independent present-schema slices, not installed linked child Requirements. See https://github.com/561-group/requirements-management-team/issues/1",
+    "status-boundary": "Source-authored Requirement only: no active converter, package deployment, installed acceptance or customer proof is claimed."
+  }
+}
