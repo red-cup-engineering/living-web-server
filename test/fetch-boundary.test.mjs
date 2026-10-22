@@ -7,7 +7,8 @@ import { createLivingWebServer as createNodeApplication, serveLivingWebServer } 
 const source = () => readFileSync(new URL("../src/fetch.mjs", import.meta.url), "utf8");
 
 test("fetch-only entry never imports the Node listener and preserves native public API", () => {
-  assert.doesNotMatch(source(), /computer-web-server\\/node|startWebServer/u);
+  assert.ok(!source().includes("computer-web-server/node"));
+  assert.ok(!source().includes("startWebServer"));
   assert.equal(createFetchApplication, createNodeApplication);
   assert.equal(typeof serveLivingWebServer, "function");
 });
