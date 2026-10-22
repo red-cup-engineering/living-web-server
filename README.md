@@ -16,6 +16,23 @@ This is the lower application imported by MOOSE, not another generic HTTP
 implementation, actor store, or a script to render a stale snapshot. The same
 creator accepts pages from arbitrary independent applications.
 
+## One application, two host entries
+
+The existing Living Web Server Fetch application can be consumed **without a Node listener** by Workers or other hosts that already own the HTTP boundary:
+
+```js
+import { createLivingWebServer } from "@red-cup-engineering/living-web-server/fetch";
+
+const application = createLivingWebServer({
+  origin: "https://example.org",
+  authorizePublicRead: ({ resource }) => approvedPublicResources.has(resource),
+  home: () => readCurrentPublicHome(),
+});
+// Existing host's fetch adapter calls application.fetch(request).
+```
+
+The original package root and `serveLivingWebServer` continue to use the **same** Fetch application while exposing the shared Node listener. The `./fetch` entry has no static Node listener import. Cloudflare-specific asset routes, signed federation handling, deployment credentials and public-read grants remain owned by each commissioned host; this export does not silently install or replace an existing website.
+
 ## Source
 
 `createLivingWebServer({ origin, authorizePublicRead, home, pages })`
@@ -24,8 +41,7 @@ provides an embeddable Fetch application. `serveLivingWebServer(application,
 A commissioning domain must authorize an actual publicly releasable source;
 a browser Accept header alone does not grant that source.
 
-The package is currently private source in the Web Engineering corpus, not a
-published registry artifact or an installed public application. Its native tests
+The source is in its independent Web Engineering package owner, but this change does not establish a newly published registry version or an installed public application. Its native tests
 require the stated package closure. Promoting the source into a standalone
 package owner must preserve its export and its consumers.
 
