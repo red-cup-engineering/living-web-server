@@ -5,6 +5,7 @@
   "description": "Reusable live source-read web application platform: TUFTE pages over the original house HTTP listener.",
   "exports": {
     ".": "./src/application.mjs",
+    "./fetch": "./src/fetch.mjs",
     "./package.json": "./package.json"
   },
   "scripts": {
