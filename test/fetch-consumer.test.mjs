@@ -5,7 +5,7 @@ import { createLivingWebServer } from "@red-cup-engineering/living-web-server/fe
 
 test("edge import exposes one existing Living Web Fetch application without Node listener code", async () => {
   const pure = readFileSync(new URL("../src/fetch.mjs", import.meta.url), "utf8");
-  assert.doesNotMatch(pure, /computer-web-server\\/node|startWebServer|node:http/u);
+  assert.equal(pure.includes("computer-web-server/node") || pure.includes("startWebServer") || pure.includes("node:http"), false);
   let reads = 0, publiclyAllowed = false;
   const app = createLivingWebServer({
     origin: "https://561.example",
