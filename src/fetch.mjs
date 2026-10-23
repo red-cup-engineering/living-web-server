@@ -1,4 +1,5 @@
 import { createTufteApplication, tuftePage } from "@red-cup-engineering/web-page-tiling-engine/application";
+import { resolveTufteTheme } from "@red-cup-engineering/web-page-tiling-engine/theme";
 
 /**
  * Living Web Server: the live TUFTE application platform. Consumers provide
@@ -25,6 +26,15 @@ export function createLivingWebServer({
   origin, home, pages = [], authorizePublicRead, document = {},
 } = {}) {
   const base = canonicalOrigin(origin);
+  if (!document || typeof document !== "object" || Array.isArray(document)) {
+    throw new TypeError("Living Web Server document options must be one object");
+  }
+  if (document.theme != null) {
+    const selected = resolveTufteTheme(document.theme);
+    if (!selected || /<\s*\/\s*style\b/iu.test(selected.styles)) {
+      throw new TypeError("Living Web Server needs an admitted TUFTE document theme");
+    }
+  }
   if (typeof authorizePublicRead !== "function") {
     throw new TypeError("Living Web Server requires an original source-owned public-read authority");
   }
