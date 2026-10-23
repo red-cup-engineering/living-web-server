@@ -42,7 +42,7 @@ export function createLivingWebServer({
     if (!Array.isArray(page.produces) || page.produces.length < 1 ||
         page.produces.length > 4 || page.produces.some(type =>
           typeof type !== "string" ||
-          !/^[a-z][a-z0-9!#  const toPage = (read, identity) => async context => {^_.+-]*\/[a-z][a-z0-9!#  const toPage = (read, identity) => async context => {^_.+-]*$/u.test(type)) ||
+          !/^[a-z][a-z0-9!#$&^_.+-]*\/[a-z][a-z0-9!#$&^_.+-]*$/u.test(type)) ||
         new Set(page.produces).size !== page.produces.length) {
       throw new TypeError("Living Web representation types require distinct exact MIME names");
     }
