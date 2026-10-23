@@ -48,3 +48,35 @@ provider. Source-authored Node tests still use that real provider. Production
 edge consumers can install with `--omit=optional`; they must still qualify
 the real TUFTE dependency tree and the actual returned HTTP representations.
 No second TUFTE renderer, proprietary fallback, or release authority is implied.
+
+
+## Instance-level TUFTE culture themes
+
+Living Web Server is already a TUFTE application; supply a source-owned
+TUFTE theme in the existing `document.theme` option. The same theme
+applies to every authorized human-readable page of that instance. JSON
+resource projections continue reading the original source; a theme does
+not change source data, rights, routes, or ActivityPub identity.
+
+```js
+const site = createLivingWebServer({
+  origin: "https://example.org",
+  authorizePublicRead: originalAuthority,
+  home: readCurrentPublicHome,
+  document: {
+    theme: {
+      name: "field-manual",
+      themeColor: "#775015",
+      styles: "body[data-tufte-theme=field-manual]{--tufte-accent:#775015;}",
+    },
+  },
+});
+```
+
+Themes are presentation resources, not authority or content. Name tokens
+must be TUFTE-admitted and raw style-tag breakouts are rejected at site
+composition. This is a bounded admission check, **not** a WCAG
+conformance certificate or a general CSS sandbox. Keep site design tokens
+and narrative canon in their original owning resources, test WCAG 2.2
+AA/keyboard/zoom/reflow on actual rendered pages, and use the TUFTE
+renderer rather than introducing a second server-side HTML renderer.
