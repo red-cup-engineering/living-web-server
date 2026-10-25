@@ -5,7 +5,7 @@ const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 const pkg=JSON.parse(read("package.json"));
 test("Fetch-only consumers never install the Node listener as a mandatory transitive dependency",()=>{
   assert.equal(pkg.exports["./fetch"],"./src/fetch.mjs");
-  assert.equal(pkg.dependencies["@red-cup-engineering/web-page-tiling-engine"],"0.16.5-dev.0");
+  assert.equal(pkg.dependencies["@red-cup-engineering/web-page-tiling-engine"],"0.17.0-dev.0");
   assert.equal(pkg.dependencies["@red-cup-engineering/computer-web-server"],undefined);
   assert.equal(pkg.peerDependencies["@red-cup-engineering/computer-web-server"],"0.6.2");
   assert.equal(pkg.peerDependenciesMeta["@red-cup-engineering/computer-web-server"].optional,true);

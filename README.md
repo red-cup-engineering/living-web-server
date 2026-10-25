@@ -57,3 +57,12 @@ provider. Source-authored Node tests still use that real provider. Production
 edge consumers can install with `--omit=optional`; they must still qualify
 the real TUFTE dependency tree and the actual returned HTTP representations.
 No second TUFTE renderer, proprietary fallback, or release authority is implied.
+
+## Fetch package receiving (0.1.0-dev.11)
+
+The original Fetch application now selects TUFTE `0.17.0-dev.0` through
+`./application/fetch`. This reconciles TUFTE's original edge split with the
+contact-link repair. It retains exactly the same HTML/JSON source authority and
+keeps enhancement disabled as before, while no longer importing a filesystem
+browser-runtime loader. The Node listener remains the existing optional
+Computer Web Server `0.6.2`; it is installed only by hosts that select it.
