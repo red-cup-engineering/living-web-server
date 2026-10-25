@@ -31,3 +31,27 @@ test("one Fetch application serves TUFTE HTML and JSON from current authorized s
   assert.equal((await get("https://example.test/missing", "text/html")).status, 404);
   assert.equal(reads, 2);
 });
+
+test("the original ASSIST contact journey survives the installed TUFTE HTML and JSON boundary", async () => {
+  const href = "mailto:causeway@561.group?subject=iLands%20Trusted%20Personal%20Executive%20Assistant%20request";
+  let reads = 0;
+  const app = createFetchApplication({
+    origin: "https://ilands.assist.example",
+    authorizePublicRead: ({ context }) => context.request.headers.get("x-source") === "admitted",
+    home: () => { reads++; return { title: "iLands", tiles: [{ id: "contact", links: [{ href, label: "Request personal assistance" }] }] }; },
+  });
+  const get = (accept, admitted = true) => app.fetch(new Request("https://ilands.assist.example/", { headers: {
+    accept, ...(admitted ? { "x-source": "admitted" } : {}),
+  } }));
+  assert.equal((await get("text/html", false)).status, 404);
+  assert.equal(reads, 0);
+  const html = await get("text/html");
+  assert.equal(html.status, 200);
+  const body = await html.text();
+  assert.ok(body.includes(`<a href="${href}">Request personal assistance</a>`));
+  assert.equal(body.includes('data-tufte-nav href="mailto:'), false);
+  const json = await get("application/json");
+  assert.equal(json.status, 200);
+  assert.equal((await json.json()).tiles[0].links[0].href, href);
+  assert.equal(reads, 2);
+});

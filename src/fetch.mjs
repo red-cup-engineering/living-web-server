@@ -1,4 +1,4 @@
-import { createTufteApplication, tuftePage } from "@red-cup-engineering/web-page-tiling-engine/application";
+import { createTufteApplication, tuftePage } from "@red-cup-engineering/web-page-tiling-engine/application/fetch";
 
 /**
  * Living Web Server: the live TUFTE application platform. Consumers provide
