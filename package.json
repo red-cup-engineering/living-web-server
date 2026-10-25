@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/living-web-server",
-  "version": "0.1.0-dev.0",
+  "version": "0.1.0-dev.10",
   "type": "module",
   "description": "One source-authorized TUFTE Fetch application, with optional original Node transport.",
   "exports": {
@@ -12,7 +12,7 @@
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/web-page-tiling-engine": "0.15.1"
+    "@red-cup-engineering/web-page-tiling-engine": "0.16.5-dev.0"
   },
   "engines": {
     "node": ">=22.18"

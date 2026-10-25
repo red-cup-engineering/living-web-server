@@ -1,5 +1,14 @@
 # Living Web Server
 
+The source candidate `0.1.0-dev.10` selects TUFTE `0.16.5-dev.0` for native
+RFC 6068 contact links in the same authorized HTML/JSON projection. The
+original ASSIST iLands email request must render through this shared supplier;
+LWS neither rewrites its content nor owns an email sender. The added native
+`test/fetch-boundary.test.mjs` case receives the actual TUFTE contact link,
+preserves JSON, and verifies that a denied reader is not consulted. These are
+unpublished source selections until the original registry publisher receives
+both immutable packages and the consuming MOOSE/ASSIST installation is checked.
+
 <!-- 561-group-standards:badges:start -->
 [![Red Cup Engineering](https://img.shields.io/badge/561%20Group-Red%20Cup%20Engineering-c0392b)](https://github.com/red-cup-engineering)
 [![License: MIT](https://img.shields.io/badge/license-MIT-c0392b)](LICENSE)
