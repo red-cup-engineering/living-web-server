@@ -54,8 +54,9 @@ The native negotiator handles `Accept: text/markdown`, weighted preferences,
 HEAD and OPTIONS. Actual source URLs resolve relative links. Publisher
 Content-Signal, access, security and cache restrictions survive. The chosen
 representation varies on Accept, and HTML byte validators, lengths, encodings
-and ranges are not reused for Markdown. Source reads and parsed/output content
-are bounded. The representation grants no AI training rights.
+and ranges are not reused for Markdown. HTML response bodies and parsed/output
+content are bounded. The source application still owns its reader's execution
+and deadlines. The representation grants no AI training rights.
 
 The original [requirement](data/records/requirements-records/living-web-server-negotiates-authorized-markdown.json)
 and [issue #1](https://github.com/red-cup-engineering/living-web-server/issues/1)
