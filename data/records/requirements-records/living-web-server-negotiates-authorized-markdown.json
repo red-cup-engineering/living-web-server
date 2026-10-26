@@ -8,31 +8,31 @@
     {
       "cell": "living-web-server-negotiates-authorized-markdown:authorized-opt-in",
       "target": "held",
-      "command": "node --test test/markdown-authorization.test.mjs",
+      "command": "node --test test/markdown-independent-receiving.test.mjs",
       "expected-exit": 0
     },
     {
       "cell": "living-web-server-negotiates-authorized-markdown:weighted-http-negotiation",
       "target": "held",
-      "command": "node --test test/markdown-negotiation.test.mjs",
+      "command": "node --test node_modules/@red-cup-engineering/web-page-tiling-engine/test/markdown-application.test.mjs",
       "expected-exit": 0
     },
     {
       "cell": "living-web-server-negotiates-authorized-markdown:semantic-fidelity-and-safety",
       "target": "held",
-      "command": "node --test test/markdown-fidelity.test.mjs",
+      "command": "node --test node_modules/@red-cup-engineering/web-page-tiling-engine/test/markdown-application.test.mjs",
       "expected-exit": 0
     },
     {
       "cell": "living-web-server-negotiates-authorized-markdown:headers-policy-and-cache",
       "target": "held",
-      "command": "node --test test/markdown-headers.test.mjs",
+      "command": "node --test node_modules/@red-cup-engineering/web-page-tiling-engine/test/markdown-application.test.mjs",
       "expected-exit": 0
     },
     {
       "cell": "living-web-server-negotiates-authorized-markdown:bounded-failures",
       "target": "held",
-      "command": "node --test test/markdown-bounds.test.mjs",
+      "command": "node --test node_modules/@red-cup-engineering/web-page-tiling-engine/test/markdown-application.test.mjs",
       "expected-exit": 0
     },
     {
@@ -56,10 +56,11 @@
       "house-scope": "Optional, standards-compliant, explicitly authorized same-URI Markdown projection, independent of a third-party Pro subscription; outperform only on independently measured same-job client value."
     },
     "source-owners": {
-      "living-application": "https://github.com/red-cup-engineering/living-web-server/blob/main/src/application.mjs",
-      "original-representation": "https://github.com/red-cup-engineering/web-page-tiling-engine/blob/main/src/tufte-application.mjs",
-      "original-http": "https://github.com/red-cup-engineering/computer-web-server",
-      "original-web-requirements": "https://github.com/red-cup-engineering/computer-web-engineering-services-section"
+      "living-application": "https://github.com/red-cup-engineering/living-web-server/blob/main/src/fetch.mjs",
+      "original-representation": "https://github.com/red-cup-engineering/web-page-tiling-engine/blob/main/src/tufte-application-fetch.mjs",
+      "original-http": "https://github.com/red-cup-engineering/http-services-section",
+      "original-web-requirements": "https://github.com/red-cup-engineering/computer-web-engineering-services-section",
+      "original-codec": "https://github.com/red-cup-engineering/markdown-engineering-services-section/blob/main/src/convert-html-to-markdown.mjs"
     },
     "provisional-subrequirement-slices": [
       "living-web-server-negotiates-authorized-markdown:authorized-opt-in",
@@ -78,6 +79,7 @@
       "Independent agent and second lawful application receiving; prove MEET before any specific real-world BEAT; no self-reported revenue"
     ],
     "decomposition-contract": "Current emsenn/schema/requirement has no first-class parent/subrequirement relation; these acceptance cells are independent present-schema slices, not installed linked child Requirements. See https://github.com/561-group/requirements-management-team/issues/1",
-    "status-boundary": "Source-authored Requirement only: no active converter, package deployment, installed acceptance or customer proof is claimed."
+    "status-boundary": "Implemented as an explicit original TUFTE capability through the same authorized Living Web readers. Native source-composition tests qualify codec, negotiation, bounds, policies and two consumer fixtures. Immutable archive receiving, installed application release and external customer/parity evidence remain separate effects; no BEAT or revenue is asserted.",
+    "acceptance-command-selection": "Original placeholder filenames are replaced by actual source-owned packaged test commands. Install the selected optional Markdown peer when receiving this explicitly enabled representation. The independent-consumer command is fixture receiving; public consumer receiving is an additional release obligation."
   }
 }
