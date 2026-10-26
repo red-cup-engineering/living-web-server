@@ -22,7 +22,7 @@ const hidden = () => new Response(null, {
 });
 
 export function createLivingWebServer({
-  origin, home, pages = [], authorizePublicRead, document = {},
+  origin, home, pages = [], authorizePublicRead, document = {}, markdown,
 } = {}) {
   const base = canonicalOrigin(origin);
   if (typeof authorizePublicRead !== "function") {
@@ -47,9 +47,10 @@ export function createLivingWebServer({
     ...pages.map((page, index) => ({
       match: page.match,
       load: toPage(page.read, page.name ?? `page-${index + 1}`),
+      ...(Object.hasOwn(page, "markdown") ? { markdown: page.markdown } : {}),
     })),
   ];
-  const app = createTufteApplication({ pages: declarations, enhance: false, document });
+  const app = createTufteApplication({ pages: declarations, enhance: false, document, markdown });
   return Object.freeze({
     origin: base,
     // An unrecognized host must not use a different site's content authority.
