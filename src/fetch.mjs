@@ -1,4 +1,4 @@
-import { createTufteApplication, tuftePage } from "@red-cup-engineering/web-page-tiling-engine/application";
+import { createTufteApplication, tuftePage } from "@red-cup-engineering/web-page-tiling-engine/application/fetch";
 import { resolveTufteTheme } from "@red-cup-engineering/web-page-tiling-engine/theme";
 
 /**
@@ -23,7 +23,7 @@ const hidden = () => new Response(null, {
 });
 
 export function createLivingWebServer({
-  origin, home, pages = [], authorizePublicRead, document = {},
+  origin, home, pages = [], authorizePublicRead, document = {}, markdown,
 } = {}) {
   const base = canonicalOrigin(origin);
   if (!document || typeof document !== "object" || Array.isArray(document)) {
@@ -85,6 +85,7 @@ export function createLivingWebServer({
     ...declared.flatMap(({ page, produces }, index) => produces ? [] : [{
       match: page.match,
       load: toPage(page.read, page.name ?? `page-${index + 1}`),
+      ...(Object.hasOwn(page, "markdown") ? { markdown: page.markdown } : {}),
     }]),
   ];
   const resources = declared.flatMap(({ page, produces }, index) => !produces ? [] : [{
@@ -94,7 +95,7 @@ export function createLivingWebServer({
     handler: toPage(page.read, page.name ?? `page-${index + 1}`, produces),
   }]);
   const app = createTufteApplication({
-    pages: declarations, resources, enhance: false, document,
+    pages: declarations, resources, enhance: false, document, markdown,
   });
   return Object.freeze({
     origin: base,

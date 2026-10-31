@@ -7,100 +7,109 @@
 [![Tips welcome](https://img.shields.io/badge/tips-welcome-d4a017)](https://github.com/561-group/.github/blob/main/TIPS.md)
 <!-- 561-group-standards:badges:end -->
 
-A real independent live-web application platform. Current source readers supply
-a fresh model per request; the existing TUFTE engine handles presentation,
-content negotiation and accessibility; the existing Computer Web Server binds
-HTTP and Node. The caller supplies public-read authorization every time.
+Living Web Server composes current, independently authorized source readers
+with the original TUFTE application. TUFTE owns the page model, rendering,
+representation negotiation and accessibility; the shared HTTP owner handles
+methods and response policy. The optional Computer Web Server owns Node
+transport. MOOSE, ASSIST and other applications can use the same Fetch entry.
 
-This is the lower application imported by MOOSE, not another generic HTTP
-implementation, actor store, or a script to render a stale snapshot. The same
-creator accepts pages from arbitrary independent applications.
+## Current source and authority
 
-## Source
+`createLivingWebServer({origin, authorizePublicRead, home, pages, document})`
+returns an application with `fetch(Request)`. `home` and each `page.read`
+read current original source. `authorizePublicRead({context, resource})` must
+return exactly `true` before any read. A foreign origin refuses before either
+reader or authority callback is called. A missing source returns 404.
 
-`createLivingWebServer({ origin, authorizePublicRead, home, pages })`
-provides an embeddable Fetch application. `serveLivingWebServer(application,
-{hostname, port, trustProxy})` binds it through the original shared listener.
-A commissioning domain must authorize an actual publicly releasable source;
-a browser Accept header alone does not grant that source.
-
-The package is currently private source in the Web Engineering corpus, not a
-published registry artifact or an installed public application. Its native tests
-require the stated package closure. Promoting the source into a standalone
-package owner must preserve its export and its consumers.
-
-## Original TUFTE/MOOSE publication representations
-
-The original Living Web Server already accepts a source-reader `pages` list.
-An editor-accepted TUFTE publication may return **an original `Response`**
-for feeds and other non-HTML resources rather than a new page model. Such
-pages declare `produces: ["application/rss+xml"]`, for example, and the
-existing TUFTE/HTTP application now admits that precise resource in
-`resources` with the declared type, instead of forcing the inherited
-HTML/JSON page-only negotiation. RSS, Atom, JSON Feed, CSS, sitemap XML,
-plain text and Markdown from the **original TUFTE producer** remain responses
-with their original bytes, status and media type.
-
-`authorizePublicRead({context,resource})` is still checked **before**
-the original source reader is called. The live response must match the
-declared `produces` type; a false content-type claim or an attempted
-ordinary TUFTE page model as a feed is refused, not relabeled. A route can
-choose exact declared MIME types only; it cannot claim wildcards. Public
-source acceptance and permission are not implied by page registration.
-
-`test/fetch-boundary.test.mjs` covers source corrections, denied reads,
-RSS negotiation, 406 for unsupported Accept, and mismatched representations.
-These tests still require the actual qualified TUFTE package and Node engine;
-passing a source-only unit fixture cannot establish the installed MOOSE host
-or public Science feeds.
-
-## Requested optional Markdown representation — source requirement, not implemented
-
-The [Living Web Server source-owned requirement](data/records/requirements-records/living-web-server-negotiates-authorized-markdown.json) and [original issue #1](https://github.com/red-cup-engineering/living-web-server/issues/1) call for **opt-in** conversion of eligible, independently authorized HTML pages to Markdown when a client selects `Accept: text/markdown`. The Cloudflare Markdown for Agents comparator is documented at [Cloudflare](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/) (Oct 9, 2026). This existing application must **reuse** TUFTE's original representation producer and the shared HTTP negotiation, rather than add its own Accept parser, cache store or data-access privilege. Preserve existing HTML/JSON responses and authorize every original live source read; absence of a publisher Content-Signal is *not* permission to assert AI training rights. The six independent acceptance cells in the new requirement are proposed tests and **currently do not establish implemented behavior**. The broader Web Engineering requirement and native requirement-decomposition gap are separately source-owned.
-
-## Fetch-only installation and transport separation
-
-This source has two actual consumers, not two servers. Edge and Cloudflare
-consumers import `@red-cup-engineering/living-web-server/fetch` and need the
-original TUFTE application but **not** the Node HTTP listener. The package's
-Node transport `@red-cup-engineering/computer-web-server` is therefore an
-optional peer dependency (and a dev dependency for this package's native tests),
-not a mandatory part of every Worker/edge dependency closure.
-
-An application importing the package root for `serveLivingWebServer` must
-install the matching `@red-cup-engineering/computer-web-server@0.6.2`
-provider. Source-authored Node tests still use that real provider. Production
-edge consumers can install with `--omit=optional`; they must still qualify
-the real TUFTE dependency tree and the actual returned HTTP representations.
-No second TUFTE renderer, proprietary fallback, or release authority is implied.
-
-## Instance-level TUFTE culture themes
-
-Living Web Server is already a TUFTE application; supply a source-owned
-TUFTE theme in the existing `document.theme` option. The same theme
-applies to every authorized human-readable page of that instance. JSON
-resource projections continue reading the original source; a theme does
-not change source data, rights, routes, or ActivityPub identity.
+Readers return an original TUFTE model or an authorized Response. Routes and
+content remain with the source application. The same authority governs every
+negotiated carrier; an Accept header is never permission to read data.
 
 ```js
-const site = createLivingWebServer({
-  origin: "https://example.org",
-  authorizePublicRead: originalAuthority,
-  home: readCurrentPublicHome,
-  document: {
-    theme: {
-      name: "field-manual",
-      themeColor: "#775015",
-      styles: "body[data-tufte-theme=field-manual]{--tufte-accent:#775015;}",
-    },
-  },
+import { createLivingWebServer } from '@red-cup-engineering/living-web-server/fetch';
+
+const app = createLivingWebServer({
+  origin: 'https://example.test',
+  authorizePublicRead: ({resource}) => resource === 'home',
+  home: () => ({title: 'Current public source', tiles: [{id: 'one', content: 'Welcome.'}]}),
 });
 ```
 
-Themes are presentation resources, not authority or content. Name tokens
-must be TUFTE-admitted and raw style-tag breakouts are rejected at site
-composition. This is a bounded admission check, **not** a WCAG
-conformance certificate or a general CSS sandbox. Keep site design tokens
-and narrative canon in their original owning resources, test WCAG 2.2
-AA/keyboard/zoom/reflow on actual rendered pages, and use the TUFTE
-renderer rather than introducing a second server-side HTML renderer.
+## Optional authorized Markdown
+
+```js
+import { createLivingWebMarkdownProjection } from '@red-cup-engineering/living-web-server/markdown';
+
+// Add to the same original createLivingWebServer configuration:
+const representation = {markdown: createLivingWebMarkdownProjection()};
+```
+
+Install the exact optional Markdown peer declared by the manifest when choosing
+this export. The helper is the original TUFTE capability, re-exported under this
+application boundary. Living Web Server adds no converter, HTTP parser, cache,
+source mirror or read privilege. HTML/JSON remain available; Markdown is off
+by default. Set `markdown: false` on an individual page to keep it off there.
+
+The native negotiator handles `Accept: text/markdown`, weighted preferences,
+HEAD and OPTIONS. Actual source URLs resolve relative links. Publisher
+Content-Signal, access, security and cache restrictions survive. The chosen
+representation varies on Accept, and HTML byte validators, lengths, encodings
+and ranges are not reused for Markdown. HTML response bodies and parsed/output
+content are bounded. The source application still owns its reader's execution
+and deadlines. The representation grants no AI training rights.
+
+The original [requirement](data/records/requirements-records/living-web-server-negotiates-authorized-markdown.json)
+and [issue #1](https://github.com/red-cup-engineering/living-web-server/issues/1)
+remain the acceptance owners. Native tests receive two application fixtures,
+changing original source, denied access, publisher policy and retained
+HTML/JSON. Original packaged TUFTE and Markdown tests own the shared codec,
+negotiation and bounds. Independently receiving a published package and actual
+public application is a separate release operation; source tests do not claim
+Cloudflare parity, search rank improvement or economic settlement.
+
+## Declared feed and asset representations
+
+A page may declare `produces` (one to four distinct, exact MIME names, no
+wildcards or parameters) when its reader returns an original `Response`, such
+as RSS, Atom, JSON Feed, CSS or sitemap XML from the source's own producer.
+Living Web Server registers that route as a TUFTE/HTTP resource with exactly
+those types, so `Accept` negotiation answers 406 for anything else.
+
+```js
+pages: [{match: '/feed.rss.xml', name: 'rss', produces: ['application/rss+xml'],
+  read: () => new Response(currentRss(), {headers: {'content-type': 'application/rss+xml; charset=utf-8'}})}]
+```
+
+`authorizePublicRead` still runs before the reader. A successful response
+whose media type differs from the declaration, or a declared route that
+returns a TUFTE model instead of a `Response`, fails rather than being
+relabeled. Bytes, status and headers are the source's own.
+
+## Instance themes
+
+`document.theme` takes a TUFTE theme (a `{name, styles, themeColor}` object
+or a theme name TUFTE admits) and applies it to every HTML page of the
+instance. It is checked when the instance is composed: an unadmitted name or
+styles containing a `</style>` breakout throws. JSON and Markdown projections
+are unaffected; a theme changes no source data, rights or routes. The check is
+not a WCAG or CSS-sandbox guarantee: test contrast, keyboard, zoom and reflow
+on rendered pages.
+
+```js
+document: {theme: {name: 'field-manual', themeColor: '#775015',
+  styles: 'body[data-tufte-theme=field-manual]{--tufte-accent:#775015;}'}}
+```
+
+## Transport separation
+
+Edge and Cloudflare consumers use `./fetch`; they need no Node HTTP listener.
+An application importing the root for `serveLivingWebServer` installs the
+optional `@red-cup-engineering/computer-web-server@0.6.2` peer and calls
+`serveLivingWebServer(app, {hostname, port, trustProxy})`. Trusted proxy input
+requires the original loopback listener. The optional Markdown export also
+imports no Node transport or filesystem source reader.
+
+Native receiving commands and the exact supplier selections are in
+`package.json`. The original ASSIST RFC 6068 contact link remains ordinary
+source-owned content; neither this application nor the Markdown projection
+sends email.
