@@ -67,6 +67,39 @@ negotiation and bounds. Independently receiving a published package and actual
 public application is a separate release operation; source tests do not claim
 Cloudflare parity, search rank improvement or economic settlement.
 
+## Declared feed and asset representations
+
+A page may declare `produces` (one to four distinct, exact MIME names, no
+wildcards or parameters) when its reader returns an original `Response`, such
+as RSS, Atom, JSON Feed, CSS or sitemap XML from the source's own producer.
+Living Web Server registers that route as a TUFTE/HTTP resource with exactly
+those types, so `Accept` negotiation answers 406 for anything else.
+
+```js
+pages: [{match: '/feed.rss.xml', name: 'rss', produces: ['application/rss+xml'],
+  read: () => new Response(currentRss(), {headers: {'content-type': 'application/rss+xml; charset=utf-8'}})}]
+```
+
+`authorizePublicRead` still runs before the reader. A successful response
+whose media type differs from the declaration, or a declared route that
+returns a TUFTE model instead of a `Response`, fails rather than being
+relabeled. Bytes, status and headers are the source's own.
+
+## Instance themes
+
+`document.theme` takes a TUFTE theme (a `{name, styles, themeColor}` object
+or a theme name TUFTE admits) and applies it to every HTML page of the
+instance. It is checked when the instance is composed: an unadmitted name or
+styles containing a `</style>` breakout throws. JSON and Markdown projections
+are unaffected; a theme changes no source data, rights or routes. The check is
+not a WCAG or CSS-sandbox guarantee: test contrast, keyboard, zoom and reflow
+on rendered pages.
+
+```js
+document: {theme: {name: 'field-manual', themeColor: '#775015',
+  styles: 'body[data-tufte-theme=field-manual]{--tufte-accent:#775015;}'}}
+```
+
 ## Transport separation
 
 Edge and Cloudflare consumers use `./fetch`; they need no Node HTTP listener.
