@@ -1,10 +1,17 @@
 name: Living Web Server Fetch/Node source boundary
 on:
+  push:
+    branches: [main]
+    paths:
+      - package.json
+      - src/**
+      - test/**
+      - .github/workflows/transport-boundary.yml
   pull_request:
     paths:
       - package.json
       - src/**
-      - test/transport-boundary.test.mjs
+      - test/**
       - .github/workflows/transport-boundary.yml
 permissions:
   contents: read
@@ -24,4 +31,17 @@ jobs:
         run: |
           node --check src/fetch.mjs
           node --check src/application.mjs
+          node --check src/markdown.mjs
           node --test test/transport-boundary.test.mjs
+  installed-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Install the exact declared TUFTE, Markdown and Node transport providers
+        run: npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund --fetch-retries=1 --fetch-timeout=30000 --registry=https://registry.561.group
+      - name: Run every repository test on the installed provider graph
+        run: npm test
