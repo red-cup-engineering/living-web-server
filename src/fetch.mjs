@@ -1,5 +1,5 @@
-import { createTufteApplication, tuftePage } from "@red-cup-engineering/web-page-tiling-engine/application/fetch";
-import { resolveTufteTheme } from "@red-cup-engineering/web-page-tiling-engine/theme";
+import { createTufteApplication, tuftePage } from "@red-cup-engineering/tufte/application/fetch";
+import { resolveTufteTheme } from "@red-cup-engineering/tufte/theme";
 
 /**
  * Living Web Server: the live TUFTE application platform. Consumers provide
