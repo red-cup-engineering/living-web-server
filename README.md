@@ -113,3 +113,55 @@ Native receiving commands and the exact supplier selections are in
 `package.json`. The original ASSIST RFC 6068 contact link remains ordinary
 source-owned content; neither this application nor the Markdown projection
 sends email.
+
+
+## Recoverable image resources
+
+The optional `./images` capability declares PNG or passive SVG images through
+this same source-authorized application. Its exact optional peer is SHP 0.4.0.
+An image is received as the existing named SHP material; structure, dimensions
+and byte identity are checked before creating the original response.
+
+```js
+import { createLivingWebServer } from '@red-cup-engineering/living-web-server/fetch';
+import { livingImagePage } from '@red-cup-engineering/living-web-server/images';
+
+const app = createLivingWebServer({
+  origin: 'https://observations.example',
+  authorizePublicRead: originalSourceAuthority,
+  pages: [livingImagePage({
+    match: '/settlement.svg', name: 'settlement-image',
+    mediaType: 'image/svg+xml', read: readCurrentOriginalImageMaterial,
+  })],
+});
+```
+
+The source is read on each admitted request, after origin, media negotiation
+and the existing authority callback. The response preserves the admitted image
+bytes and derives content length and ETag from those bytes. Cache policy defaults
+to `no-store`; the publisher may supply its own `cacheControl`. No image digest
+is used as an authorization. Missing source returns 404, unoffered media 406,
+foreign origin 421, and malformed source is refused. The helper adds no router,
+image mirror, artifact cache, automatic execution or independent truth store.
+
+`test/images-independent-receiving.test.mjs` runs an actual Metrologic
+settlement through XML's source-bearing radial, SHP image material and packet,
+and the real Fetch application's SVG/PNG/HTML response paths. The core Fetch
+entry remains usable without the optional image peer. The image helper itself
+is portable; the Node listener remains the separate existing capability.
+
+### Image workbench
+
+`npm run example:images -- ./dist/image-workbench.html` builds the included
+[image workbench](examples/image-workbench.md) into one offline HTML file.
+It computes an illustrative settlement through Metrologic, displays a recoverable
+SVG, and writes a compact indexed PNG with the same complete CBOR source and
+view. Its visible four-color symbol carries the source identifier. The example
+can encode text, inspect PNG/SVG payloads, scan PNG/JPEG pixels, regenerate the
+original SVG from a PNG payload, and download the images and visible SHP packet.
+The complete packet also passes the original CloudEvent producer and reader.
+
+The example and its browser receiver use the declared development providers.
+They perform no installation or external fetch. Build receipts record source
+modules, artifact identities and actual byte sizes. The receiver checks real
+downloads, refusals, mobile layout and JavaScript-disabled packet display.
