@@ -17,7 +17,7 @@
     "test:images:browser": "node examples/image-workbench.receiving.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/web-page-tiling-engine": "0.21.0-dev.0"
+    "@red-cup-engineering/tufte": "0.21.0-dev.0"
   },
   "engines": {
     "node": ">=22.18"
