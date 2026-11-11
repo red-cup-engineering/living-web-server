@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createLivingWebServer } from "../src/application.mjs";
+import { createLivingWebServer, serveLivingWebServer } from "../src/application.mjs";
 
 const page = value => ({ title: "Living public source", tiles: [
   { id: "currently-admitted", title: "Public observation", content: value },
@@ -54,4 +54,24 @@ test("invalid origins or undeclared authority refuse at construction", () => {
     /source-owned public-read authority/);
   assert.throws(() => createLivingWebServer({ origin: "https://world.example", authorizePublicRead: async () => true,
     pages: [{ match: "/rooms" }] }), /source readers/);
+});
+
+test("single-site serving supplies the original Web listener's compiled application", async () => {
+  let calls = 0;
+  const application = {
+    origin: "https://world.example",
+    fetch() { calls++; return new Response("original single site"); },
+  };
+  const running = await serveLivingWebServer(application, { hostname: "127.0.0.1", port: 0, trustProxy: true });
+  try {
+    const response = await fetch(`http://127.0.0.1:${running.port}/`, { headers: {
+      "x-forwarded-host": "world.example", "x-forwarded-proto": "https",
+    } });
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), "original single site");
+    assert.equal(calls, 1);
+  } finally {
+    await running.close();
+  }
+  assert.equal(running.server.listening, false);
 });
