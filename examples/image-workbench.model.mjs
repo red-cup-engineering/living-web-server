@@ -5,7 +5,7 @@ import { readSvgDataCarrier } from '@red-cup-engineering/xml-document-rendering-
 import { encodePngIndexed, writePngCarrier } from '@red-cup-engineering/computer-serialized-content-engineering-services-section/png-carrier';
 import { imagePayload, imagePayloadFromBytes } from '@red-cup-engineering/computer-serialized-content-engineering-services-section/image-payload';
 import { encodeFourOptical, renderFourOpticalIndexed, fourOpticalProfile, opticalFourPalette, opticalFourLimits } from '@red-cup-engineering/computer-serialized-content-engineering-services-section/optical-four';
-import { readingOfWire } from '@red-cup-engineering/computer-data-engineering-services-section/four';
+import { readingOfWire } from '@red-cup-engineering/metrologic/four';
 import { imageMaterial } from '@red-cup-engineering/semiotic-hypertext-packet/image-materials';
 import { shp } from '@red-cup-engineering/semiotic-hypertext-packet/write';
 
