@@ -12,6 +12,8 @@ with the original TUFTE application. TUFTE owns the page model, rendering,
 representation negotiation and accessibility; the shared HTTP owner handles
 methods and response policy. The optional Computer Web Server owns Node
 transport. MOOSE, ASSIST and other applications can use the same Fetch entry.
+Applications with multiple independently authorized origins compose through
+the generic `./host` capability before reaching the Web Server listener.
 
 ## Current source and authority
 
@@ -104,15 +106,80 @@ document: {theme: {name: 'field-manual', themeColor: '#775015',
 
 Edge and Cloudflare consumers use `./fetch`; they need no Node HTTP listener.
 An application importing the root for `serveLivingWebServer` installs the
-optional `@red-cup-engineering/computer-web-server@0.6.2` peer and calls
+optional `@red-cup-engineering/computer-web-server@0.7.2` peer and calls
 `serveLivingWebServer(app, {hostname, port, trustProxy})`. Trusted proxy input
 requires the original loopback listener. The optional Markdown export also
 imports no Node transport or filesystem source reader.
+The selected Web Server peer declares Node 24.2.0 or newer for hosted Node
+operation; the portable Fetch entry retains its own manifest requirements.
 
 Native receiving commands and the exact supplier selections are in
 `package.json`. The original ASSIST RFC 6068 contact link remains ordinary
 source-owned content; neither this application nor the Markdown projection
 sends email.
+
+## Hosting independent applications
+
+`./host` provides generic application hosting downstream of Computer Web
+Server. MOOSE supplies MUD/social behavior and ActivityPub supplies federation
+behavior; Living Web Server owns admission and composition of their Fetch
+applications. It imports neither consumer. This keeps one generic hosting
+implementation while retaining each application's source and authorization.
+
+```js
+import {
+  createLivingWebHost, serveLivingWebHost,
+} from '@red-cup-engineering/living-web-server/host';
+
+const host = createLivingWebHost({applications: [
+  {origin: 'https://science.example', fetch: scienceApplication.fetch},
+  {origin: 'https://engineering.example', fetch: engineeringApplication.fetch},
+]});
+
+// The original Node listener sits behind a trusted TLS ingress on loopback.
+const running = await serveLivingWebHost(host, {
+  hostname: '127.0.0.1', port: 8000, trustProxy: true,
+});
+// The commissioning application owns worker start/stop and custody release.
+// await running.close();
+```
+
+Pass an existing `{origin, fetch}` application directly when its Fetch method
+uses `this`. Admission captures the function with its original receiver.
+
+### Hosting contract and ownership
+
+| Boundary | Contract |
+| --- | --- |
+| Construction | `createLivingWebHost({applications})` requires a nonempty array of applications, each with an origin string and Fetch function. All origins are admitted before any application is invoked. |
+| Identity | The existing Living Web origin rule accepts HTTPS and loopback HTTP, rejects credentials, non-root paths, query strings and fragments, and normalizes to `URL.origin`. Canonically duplicate origins refuse. |
+| Result | A frozen `{origins, fetch}` contains frozen admitted origins and the original Web Server's compiled Fetch entry. Later mutations of the input list, origin or Fetch property cannot rebind a route. Applications may continue reading their own changing source. |
+| Dispatch | The original Web Server owns resources, method handling, response policy and failures. An exact origin selects one application's Fetch handler. An unknown origin returns 421 with `Cache-Control: no-store` before any source callback; no default site exists. |
+| Context | The original Request reaches the selected source. The Web Server's supported execution context is preserved: capabilities by identity, remote address, HTTP version, and request time/nonce through their supplier functions. Arbitrary extra execution fields are not part of the Web Server contract. |
+| Transport | `serveLivingWebHost(host, {hostname, port, trustProxy})` requires the original admitted host. It loads and invokes Computer Web Server's Node listener with the retained compiled specification, returning the original `{server, port, address, close}` lifecycle. Port zero permits an ephemeral listener. |
+| Proxy trust | `trustProxy` is a boolean and may be true only for a loopback listener. Without that policy, the upstream Node adapter ignores forwarded host/protocol headers. With it, the upstream adapter reconstructs the public origin; unregistered origins still refuse. |
+| Application lifetime | The caller owns protocol-specific worker startup, rollback, state and custody. Hosting does not start delivery queues, infer an identity from content, acquire data rights, or release a supplied application's storage. |
+
+The `./host` module does not load TUFTE or Node transport during import or
+Fetch application construction. It selects the exact optional Web Server peer
+already declared in the manifest; calling `serveLivingWebHost` loads that
+peer's Node adapter. Existing `./fetch` consumers remain portable and do not
+acquire a mandatory Node dependency. `serveLivingWebServer` now composes its
+single application through the same host, supplying the compiled specification
+that the original Node listener requires.
+
+The design keeps HTTP routing and listener mechanics in their existing owner.
+Duplicating an origin router or listener in MOOSE would split the hosting
+contract, while moving ActivityPub into Living Web Server would make a generic
+upstream depend on its specialized consumer. A generic host with supplied Fetch
+applications meets the dependency direction without either new ownership edge.
+
+`node --test test/host.test.mjs test/transport-boundary.test.mjs` receives
+construction refusals, origin isolation, mutation resistance, supported context,
+request methods and bodies, a real shared Node listener, proxy admission and
+shutdown. `test/application.test.mjs` also receives the existing single-site
+listener. Repository tests establish source behavior; package publication,
+installed consumer cutover and public deployment are separate verification.
 
 
 ## Recoverable image resources

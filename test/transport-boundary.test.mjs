@@ -9,18 +9,22 @@ test("Fetch-only consumers never install the Node listener as a mandatory transi
   assert.deepEqual(Object.keys(pkg.dependencies),["@red-cup-engineering/tufte"]);
   assert.match(pkg.dependencies["@red-cup-engineering/tufte"],/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/);
   assert.equal(pkg.dependencies["@red-cup-engineering/computer-web-server"],undefined);
-  assert.equal(pkg.peerDependencies["@red-cup-engineering/computer-web-server"],"0.6.2");
+  assert.equal(pkg.peerDependencies["@red-cup-engineering/computer-web-server"],"0.7.2");
   assert.equal(pkg.peerDependenciesMeta["@red-cup-engineering/computer-web-server"].optional,true);
-  assert.equal(pkg.devDependencies["@red-cup-engineering/computer-web-server"],"0.6.2");
+  assert.equal(pkg.devDependencies["@red-cup-engineering/computer-web-server"],"0.7.2");
 });
 test("Node transport is absent from Fetch-only module imports",()=>{
   const fetchSource=read("src/fetch.mjs");
   const nodeSource=read("src/application.mjs");
+  const hostSource=read("src/host.mjs");
   assert.ok(fetchSource.includes("@red-cup-engineering/tufte/application"));
   assert.ok(!fetchSource.includes("computer-web-server"));
   assert.ok(!fetchSource.includes("node:http"));
   assert.ok(!fetchSource.includes("serveLivingWebServer"));
-  assert.ok(nodeSource.includes("@red-cup-engineering/computer-web-server/node"));
+  assert.ok(nodeSource.includes('from "./host.mjs"'));
+  assert.ok(hostSource.includes('await import("@red-cup-engineering/computer-web-server/node")'));
+  assert.ok(!hostSource.includes("@red-cup-engineering/tufte"));
+  assert.equal(pkg.exports["./host"], "./src/host.mjs");
   assert.ok(nodeSource.includes('from "./fetch.mjs"'));
 });
 test("the original live page source retains admission before source reading",()=>{

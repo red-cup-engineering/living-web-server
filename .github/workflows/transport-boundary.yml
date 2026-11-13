@@ -31,6 +31,8 @@ jobs:
         run: |
           node --check src/fetch.mjs
           node --check src/application.mjs
+          node --check src/host.mjs
+          node --check src/origin.mjs
           node --check src/markdown.mjs
           node --test test/transport-boundary.test.mjs
   installed-suite:

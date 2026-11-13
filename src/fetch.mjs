@@ -1,5 +1,6 @@
 import { createTufteApplication, tuftePage } from "@red-cup-engineering/tufte/application/fetch";
 import { resolveTufteTheme } from "@red-cup-engineering/tufte/theme";
+import { canonicalOrigin } from "./origin.mjs";
 
 /**
  * Living Web Server: the live TUFTE application platform. Consumers provide
@@ -8,16 +9,6 @@ import { resolveTufteTheme } from "@red-cup-engineering/tufte/theme";
  *
  * MOOSE is one consumer; unrelated applications can contribute their pages.
  */
-function canonicalOrigin(input) {
-  const uri = new URL(input);
-  const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(uri.hostname);
-  if ((uri.protocol !== "https:" && !(loopback && uri.protocol === "http:")) ||
-      uri.username || uri.password || uri.pathname !== "/" || uri.search || uri.hash) {
-    throw new TypeError("Living Web Server origin must be a canonical HTTPS origin (or loopback HTTP)");
-  }
-  return uri.origin;
-}
-
 const hidden = () => new Response(null, {
   status: 404, headers: { "cache-control": "no-store" },
 });
@@ -100,11 +91,11 @@ export function createLivingWebServer({
   return Object.freeze({
     origin: base,
     // An unrecognized host must not use a different site's content authority.
-    fetch(request) {
+    fetch(request, execution) {
       if (new URL(request.url).origin !== base) {
         return new Response(null, { status: 421, headers: { "cache-control": "no-store" } });
       }
-      return app.fetch(request);
+      return app.fetch(request, execution);
     },
   });
 }

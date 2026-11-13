@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { createLivingWebServer as createFetchApplication } from "../src/fetch.mjs";
 import { createLivingWebServer as createNodeApplication, serveLivingWebServer } from "../src/application.mjs";
+import { createLivingWebHost } from "../src/host.mjs";
 
 const source = () => readFileSync(new URL("../src/fetch.mjs", import.meta.url), "utf8");
 
@@ -30,6 +31,42 @@ test("one Fetch application serves TUFTE HTML and JSON from current authorized s
   assert.equal((await get("https://other.test/", "text/html")).status, 421);
   assert.equal((await get("https://example.test/missing", "text/html")).status, 404);
   assert.equal(reads, 2);
+});
+
+test("host execution reaches the original Living Web source authority and reader", async () => {
+  const capabilities = Object.freeze({ publicRead: "explicit-source-grant" });
+  const abort = new AbortController();
+  const request = new Request("https://authority.example/", {
+    signal: abort.signal, headers: { accept: "application/json" },
+  });
+  const execution = { capabilities, remoteAddress: "127.0.0.7", httpVersion: "2.0" };
+  const observed = [];
+  const check = (context, stage) => {
+    assert.equal(context.capabilities, capabilities);
+    assert.equal(context.remoteAddress, execution.remoteAddress);
+    assert.equal(context.httpVersion, execution.httpVersion);
+    assert.equal(context.request, request);
+    assert.equal(context.signal, request.signal);
+    observed.push(stage);
+  };
+  const application = createFetchApplication({
+    origin: "https://authority.example",
+    authorizePublicRead: ({ context }) => {
+      check(context, "authorize");
+      return context.capabilities.publicRead === "explicit-source-grant";
+    },
+    home: context => {
+      check(context, "read");
+      return { title: "Original source", tiles: [{ id: "current", content: "authorized" }] };
+    },
+  });
+  const host = createLivingWebHost({ applications: [application] });
+  for (const serving of [application, host]) {
+    const response = await serving.fetch(request, execution);
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).title, "Original source");
+  }
+  assert.deepEqual(observed, ["authorize", "read", "authorize", "read"]);
 });
 
 test("the original ASSIST contact journey survives the installed TUFTE HTML and JSON boundary", async () => {
