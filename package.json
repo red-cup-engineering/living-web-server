@@ -17,7 +17,7 @@
     "test:images:browser": "node examples/image-workbench.receiving.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/tufte": "0.21.0-dev.0"
+    "@red-cup-engineering/tufte": "0.21.4"
   },
   "engines": {
     "node": ">=22.18"
@@ -33,7 +33,7 @@
   },
   "peerDependencies": {
     "@red-cup-engineering/computer-web-server": "0.6.2",
-    "@red-cup-engineering/markdown-engineering-services-section": "0.5.7-dev.0",
+    "@red-cup-engineering/markdown-engineering-services-section": "0.5.9",
     "@red-cup-engineering/semiotic-hypertext-packet": "0.4.0"
   },
   "peerDependenciesMeta": {
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@red-cup-engineering/computer-web-server": "0.6.2",
-    "@red-cup-engineering/markdown-engineering-services-section": "0.5.7-dev.0",
+    "@red-cup-engineering/markdown-engineering-services-section": "0.5.9",
     "@red-cup-engineering/semiotic-hypertext-packet": "0.4.0",
     "@red-cup-engineering/xml-document-rendering-service": "0.3.0",
     "@red-cup-engineering/computer-serialized-content-engineering-services-section": "0.3.0",
