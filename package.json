@@ -10,6 +10,12 @@
     "./markdown": "./src/markdown.mjs",
     "./images": "./src/images.mjs"
   },
+  "files": [
+    "src",
+    "test",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "test:markdown": "node --test test/markdown-independent-receiving.test.mjs",
