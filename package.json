@@ -12,15 +12,11 @@
   },
   "files": [
     "src",
-    "test",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
-    "test": "node --test test/*.test.mjs",
-    "test:markdown": "node --test test/markdown-independent-receiving.test.mjs",
-    "example:images": "node scripts/build-image-workbench.mjs",
-    "test:images:browser": "node examples/image-workbench.receiving.mjs"
+    "example:images": "node scripts/build-image-workbench.mjs"
   },
   "dependencies": {
     "@red-cup-engineering/tufte": "^0.21.4"
