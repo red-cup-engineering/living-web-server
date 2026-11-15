@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/living-web-server",
-  "version": "0.1.3-dev.0",
+  "version": "0.1.4-dev.0",
   "type": "module",
   "description": "One source-authorized TUFTE Fetch application, with optional original Node transport.",
   "exports": {
