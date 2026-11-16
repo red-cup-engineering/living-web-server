@@ -69,6 +69,16 @@ projection is not executed, does not remove any requests, and does not
 represent CAIRN's installed stylesheet route or a browser cache trace.
 No deployed/default behavior is changed.
 
+With the original optional Computer Web Server provider installed, add
+`--node-wire` to either command. The isolated fixture uses that provider's
+compiled Web and Systems listener on an ephemeral loopback port, with a new
+HTTP/1 connection per request. It records received HTTP response bytes
+(including headers and framing, but not TCP/IP overhead) and delivered body
+bytes separately. It offers gzip and Brotli and reports the coding actually
+received, which may be none. This is not a TLS, proxy, browser or keep-alive
+benchmark; it does not commission a deployed Living Web host. The original
+listener is closed even if the fixture fails.
+
 ## Optional authorized Markdown
 
 ```js
