@@ -35,6 +35,25 @@ const app = createLivingWebServer({
 });
 ```
 
+## Authorized source-read workload
+
+Run `npm run --silent measure:source-read` from this checkout or the unpacked
+package with its native dependencies installed. The versioned JSON output
+reports request counts, source-reader and authorization calls, body bytes,
+and per-request wall time and process CPU time for the original Fetch route.
+It uses one controlled publication and live-readings fixture across HTML,
+JSON, and RSS, not a cache or simulated renderer.
+
+A cold-authorized sample is the first request that reaches each fixture
+representation's reader, not cold process or disk startup. The command checks
+private-to-public access, fresh source revisions, revocation and a foreign
+origin before accepting the measurements. For comparable timings, repeat on
+the same idle runtime and retain individual samples, source and dependency
+identities. The in-process body counts are not network or compressed bytes;
+no physical power, energy, or carbon is measured. The optional Node listener
+and any real application's production reading require separate evidence.
+See [the source-read requirement](https://github.com/red-cup-engineering/living-web-server/issues/9).
+
 ## Optional authorized Markdown
 
 ```js

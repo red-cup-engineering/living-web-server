@@ -12,10 +12,12 @@
   },
   "files": [
     "src",
+    "scripts/measure-source-read-workload.mjs",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
+    "measure:source-read": "node scripts/measure-source-read-workload.mjs",
     "example:images": "node scripts/build-image-workbench.mjs"
   },
   "dependencies": {
