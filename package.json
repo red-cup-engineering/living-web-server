@@ -27,7 +27,7 @@
     "@red-cup-engineering/tufte": "^0.21.4"
   },
   "engines": {
-    "node": ">=22.18"
+    "node": ">=24.3.0"
   },
   "license": "MIT",
   "repository": {
