@@ -19,7 +19,7 @@
     "example:images": "node scripts/build-image-workbench.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/tufte": "^0.21.4"
+    "@red-cup-engineering/tufte": "^0.22.0"
   },
   "engines": {
     "node": ">=22.18"
