@@ -27,12 +27,36 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-      - name: Validate original independent Fetch and optional Node dependency contract
+      - name: Check source syntax and receiving package enrollment
+        shell: bash
         run: |
-          node --check src/fetch.mjs
-          node --check src/application.mjs
-          node --check src/markdown.mjs
-          node --test test/transport-boundary.test.mjs
+          set -euo pipefail
+          for module in src/*.mjs; do node --check "$module"; done
+          scratch="$(mktemp -d)"
+          trap 'rm -rf "$scratch"' EXIT
+          npm pack --ignore-scripts --json --pack-destination "$scratch" > "$scratch/pack.json"
+          node --input-type=module - "$scratch/pack.json" <<'NODE'
+          import assert from "node:assert/strict";
+          import {readFileSync} from "node:fs";
+          import {fileURLToPath} from "node:url";
+          import {relative} from "node:path";
+          const read = path => JSON.parse(readFileSync(path,"utf8"));
+          const manifest = read("package.json");
+          const nodeTransport = "@red-cup-engineering/computer-web-server";
+          assert.equal(manifest.dependencies?.[nodeTransport],undefined);
+          assert.ok(manifest.peerDependencies?.[nodeTransport]);
+          assert.equal(manifest.peerDependenciesMeta?.[nodeTransport]?.optional,true);
+          const [pack] = read(process.argv[2]);
+          assert.equal(pack.name,manifest.name);
+          const members = new Set(pack.files.map(file => file.path));
+          const declared = manifest.receivingTests;
+          assert.ok(Array.isArray(declared) && declared.length > 0);
+          for (const path of declared) assert.ok(members.has(path), `Missing packed receiver: ${path}`);
+          for (const specifier of [manifest.name, manifest.name + "/fetch", manifest.name + "/markdown"]) {
+            const selected = relative(process.cwd(),fileURLToPath(import.meta.resolve(specifier)));
+            assert.ok(members.has(selected), `Missing packed export: ${specifier}`);
+          }
+          NODE
   installed-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -41,7 +65,14 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-      - name: Install the exact declared TUFTE, Markdown and Node transport providers
-        run: npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund --fetch-retries=1 --fetch-timeout=30000 --registry=https://registry.561.group
-      - name: Run every repository test on the installed provider graph
-        run: npm test
+      - name: Require the canonical frozen registry input
+        shell: bash
+        run: |
+          if ! test -s package-lock.json; then
+            echo "::error file=package.json::Missing canonical npm lock. Receive exact issued packages through the configured scoped registry before installed qualification."
+            exit 1
+          fi
+      - name: Install the frozen TUFTE, Markdown and transport graph
+        run: npm ci --include=dev --ignore-scripts --no-audit --no-fund --fetch-retries=1 --fetch-timeout=30000 --registry=https://registry.561.group
+      - name: Verify original Markdown receiving on the installed graph
+        run: npm run test:markdown:receiving
