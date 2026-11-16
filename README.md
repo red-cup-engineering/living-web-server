@@ -54,6 +54,21 @@ no physical power, energy, or carbon is measured. The optional Node listener
 and any real application's production reading require separate evidence.
 See [the source-read requirement](https://github.com/red-cup-engineering/living-web-server/issues/9).
 
+To compare the original inline and shared house-theme paths, run
+`npm run --silent measure:source-read -- --compare-house-theme`. The same
+fixtures use TUFTE's authored Early Mac theme in both runs. The candidate
+uses the original renderer's stylesheet option and a separately authorized
+CSS resource; it fetches that stylesheet after every HTML response, without
+simulating a browser cache. It checks ordered CSS (including nonce layout
+rules), unchanged page bodies and skip links, the same JSON source model and
+RSS bytes, and the same source freshness and denial invariants. TUFTE's JSON
+shell fingerprint correctly changes because document options have changed. The report includes
+total requests and bytes, first-page-plus-stylesheet bytes, and a separate
+body-only projection if repeat stylesheet responses were 304. The 304
+projection is not executed, does not remove any requests, and does not
+represent CAIRN's installed stylesheet route or a browser cache trace.
+No deployed/default behavior is changed.
+
 ## Optional authorized Markdown
 
 ```js
