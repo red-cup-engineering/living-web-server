@@ -12,17 +12,23 @@
   },
   "files": [
     "src",
+    "test/markdown-independent-receiving.test.mjs",
     "LICENSE",
     "README.md"
   ],
+  "receivingTests": [
+    "test/markdown-independent-receiving.test.mjs"
+  ],
   "scripts": {
+    "test": "node --test",
+    "test:markdown:receiving": "node --test test/markdown-independent-receiving.test.mjs",
     "example:images": "node scripts/build-image-workbench.mjs"
   },
   "dependencies": {
     "@red-cup-engineering/tufte": "^0.22.0"
   },
   "engines": {
-    "node": ">=22.18"
+    "node": ">=24.15.0"
   },
   "license": "MIT",
   "repository": {
