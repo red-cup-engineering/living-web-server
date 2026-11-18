@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/living-web-server",
-  "version": "0.1.4-dev.0",
+  "version": "0.1.5-dev.0",
   "type": "module",
   "description": "One source-authorized TUFTE Fetch application, with optional original Node transport.",
   "exports": {
@@ -20,14 +20,15 @@
     "test/markdown-independent-receiving.test.mjs"
   ],
   "scripts": {
+    "test": "node --test",
     "test:markdown:receiving": "node --test test/markdown-independent-receiving.test.mjs",
     "example:images": "node scripts/build-image-workbench.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/tufte": "^0.21.4"
+    "@red-cup-engineering/tufte": "^0.22.0"
   },
   "engines": {
-    "node": ">=24.3.0"
+    "node": ">=24.15.0"
   },
   "license": "MIT",
   "repository": {
@@ -40,7 +41,6 @@
   },
   "peerDependencies": {
     "@red-cup-engineering/computer-web-server": "^0.7.5",
-    "@red-cup-engineering/markdown-engineering-services-section": "^0.5.9",
     "@red-cup-engineering/semiotic-hypertext-packet": "^0.4.0",
     "@red-cup-engineering/xml-document-rendering-service": "^0.3.3",
     "@red-cup-engineering/metrologic": "^0.22.4",
@@ -48,9 +48,6 @@
   },
   "peerDependenciesMeta": {
     "@red-cup-engineering/computer-web-server": {
-      "optional": true
-    },
-    "@red-cup-engineering/markdown-engineering-services-section": {
       "optional": true
     },
     "@red-cup-engineering/semiotic-hypertext-packet": {

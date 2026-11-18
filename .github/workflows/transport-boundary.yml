@@ -4,12 +4,14 @@ on:
     branches: [main]
     paths:
       - package.json
+      - package-lock.json
       - src/**
       - test/**
       - .github/workflows/transport-boundary.yml
   pull_request:
     paths:
       - package.json
+      - package-lock.json
       - src/**
       - test/**
       - .github/workflows/transport-boundary.yml
@@ -81,6 +83,6 @@ jobs:
             exit 1
           fi
       - name: Install the frozen TUFTE, Markdown and transport graph
-        run: npm ci --include=dev --engine-strict --ignore-scripts --no-audit --no-fund --fetch-retries=1 --fetch-timeout=30000 --registry=https://registry.561.group
+        run: npm ci --include=dev --engine-strict --strict-peer-deps --ignore-scripts --no-audit --no-fund --fetch-retries=1 --fetch-timeout=30000
       - name: Verify original Markdown receiving on the installed graph
-        run: npm run test:markdown:receiving
+        run: npm test

@@ -44,10 +44,10 @@ import { createLivingWebMarkdownProjection } from '@red-cup-engineering/living-w
 const representation = {markdown: createLivingWebMarkdownProjection()};
 ```
 
-Install the exact optional Markdown peer declared by the manifest when choosing
-this export. The helper is the original TUFTE capability, re-exported under this
-application boundary. Living Web Server adds no converter, HTTP parser, cache,
-source mirror or read privilege. HTML/JSON remain available; Markdown is off
+When enabling this export, install the Markdown codec version admitted by the
+selected TUFTE package's optional peer dependency. TUFTE owns that contract;
+Living Web Server adds no converter, HTTP parser, cache, source mirror or read
+privilege. HTML/JSON remain available; Markdown is off
 by default. Set `markdown: false` on an individual page to keep it off there.
 
 The native negotiator handles `Accept: text/markdown`, weighted preferences,
