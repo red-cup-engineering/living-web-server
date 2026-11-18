@@ -75,3 +75,70 @@ test('decompressed HTML and publisher refusal fail closed in the original receiv
   assert.equal(noTransform.body,null);
   assert.equal(noTransform.headers.get('cache-control'),'no-store');
 });
+
+test('original Node transport preserves origin authority, live Markdown and transport context', { timeout: 15_000 }, async (t) => {
+  const { request: httpRequest } = await import('node:http');
+  const { serveLivingWebServer } = await import('@red-cup-engineering/living-web-server');
+  const hostname = '127.0.0.1';
+  const origin = `http://${hostname}`;
+  let reads = 0;
+  const admitted = [];
+  const app = createLivingWebServer({
+    origin,
+    authorizePublicRead: ({ context }) => {
+      admitted.push([context.url.origin, context.remoteAddress, context.httpVersion]);
+      return context.request.headers.get('x-fixture-public-read') === 'yes';
+    },
+    markdown: createLivingWebMarkdownProjection(),
+    home: () => new Response(
+      `<article><h1>Edition ${++reads}</h1><a href="/research">Research</a></article>`,
+      { headers: { 'content-type': 'text/html', 'content-signal': 'search=yes, ai-train=no' } },
+    ),
+  });
+  const transport = await serveLivingWebServer(app, { hostname, port: 0 });
+  t.after(() => transport.close());
+  assert.ok(transport.port > 0);
+
+  const receive = (accept, { allowed = true, method = 'GET', host = hostname } = {}) =>
+    new Promise((resolve, reject) => {
+      const headers = { Host: host, Accept: accept };
+      if (allowed) headers['x-fixture-public-read'] = 'yes';
+      const request = httpRequest({ hostname, port: transport.port, path: '/', method, headers }, async (response) => {
+        try {
+          response.setEncoding('utf8');
+          let body = '';
+          for await (const chunk of response) body += chunk;
+          resolve({ status: response.statusCode, headers: response.headers, body });
+        } catch (error) {
+          reject(error);
+        }
+      });
+      request.on('error', reject);
+      request.end();
+    });
+
+  const foreign = await receive('text/markdown', { host: 'elsewhere.test' });
+  assert.equal(foreign.status, 421);
+  assert.deepEqual(admitted, []);
+  assert.equal(reads, 0);
+  const denied = await receive('text/markdown', { allowed: false });
+  assert.equal(denied.status, 404);
+  assert.equal(reads, 0);
+
+  const markdown = await receive('text/markdown');
+  assert.equal(markdown.status, 200);
+  assert.match(markdown.headers['content-type'], /^text\/markdown/u);
+  assert.match(markdown.body, /# Edition 1/u);
+  assert.ok(markdown.body.includes(`[Research](${origin}/research)`));
+  assert.equal(markdown.headers['content-signal'], 'search=yes, ai-train=no');
+  const html = await receive('text/html');
+  assert.equal(html.status, 200);
+  assert.match(html.body, /<h1>Edition 2<\/h1>/u);
+
+  const head = await receive('text/markdown', { method: 'HEAD' });
+  assert.equal(head.status, 200);
+  assert.equal(head.body, '');
+  assert.match(head.headers['content-type'], /^text\/markdown/u);
+  assert.ok(admitted.length >= 3);
+  for (const execution of admitted) assert.deepEqual(execution, [origin, hostname, '1.1']);
+});

@@ -96,16 +96,13 @@ export function createLivingWebServer({
   }]);
   const app = createTufteApplication({
     pages: declarations, resources, enhance: false, document, markdown,
-  });
-  return Object.freeze({
-    origin: base,
-    // An unrecognized host must not use a different site's content authority.
-    fetch(request) {
-      if (new URL(request.url).origin !== base) {
+    // Reject a foreign origin in the original compiled engine, before authority
+    // or source callbacks, on both Fetch and the optional Node transport.
+    onRequest(context) {
+      if (context.url.origin !== base) {
         return new Response(null, { status: 421, headers: { "cache-control": "no-store" } });
       }
-      return app.fetch(request);
     },
   });
+  return Object.freeze({ origin: base, specification: app.specification, fetch: app.fetch });
 }
-
