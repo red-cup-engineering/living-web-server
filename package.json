@@ -1,27 +1,39 @@
 {
   "name": "@red-cup-engineering/living-web-server",
-  "version": "0.1.2-dev.1",
+  "version": "0.1.5-dev.0",
   "type": "module",
-  "description": "Source-authorized TUFTE applications and multi-origin Fetch hosting over the original Web Server.",
+  "description": "One source-authorized TUFTE Fetch application, with optional original Node transport.",
   "exports": {
     ".": "./src/application.mjs",
     "./fetch": "./src/fetch.mjs",
-    "./host": "./src/host.mjs",
     "./package.json": "./package.json",
     "./markdown": "./src/markdown.mjs",
-    "./images": "./src/images.mjs"
+    "./images": "./src/images.mjs",
+    "./host": "./src/host.mjs"
   },
+  "files": [
+    "src",
+    "test/markdown-independent-receiving.test.mjs",
+    "scripts/measure-source-read-workload.mjs",
+    "LICENSE",
+    "README.md",
+    "test/host.test.mjs"
+  ],
+  "receivingTests": [
+    "test/markdown-independent-receiving.test.mjs",
+    "test/host.test.mjs"
+  ],
   "scripts": {
-    "test": "node --test test/*.test.mjs",
-    "test:markdown": "node --test test/markdown-independent-receiving.test.mjs",
-    "example:images": "node scripts/build-image-workbench.mjs",
-    "test:images:browser": "node examples/image-workbench.receiving.mjs"
+    "test": "node --test",
+    "test:markdown:receiving": "node --test test/markdown-independent-receiving.test.mjs",
+    "measure:source-read": "node scripts/measure-source-read-workload.mjs",
+    "example:images": "node scripts/build-image-workbench.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/tufte": "0.21.0-dev.0"
+    "@red-cup-engineering/tufte": "^0.22.0"
   },
   "engines": {
-    "node": ">=22.18"
+    "node": ">=24.15.0"
   },
   "license": "MIT",
   "repository": {
@@ -33,30 +45,38 @@
     "url": "https://github.com/561-group/.github/blob/main/TIPS.md"
   },
   "peerDependencies": {
-    "@red-cup-engineering/computer-web-server": "0.7.2",
-    "@red-cup-engineering/markdown-engineering-services-section": "0.5.7-dev.0",
-    "@red-cup-engineering/semiotic-hypertext-packet": "0.4.0"
+    "@red-cup-engineering/computer-web-server": "^0.7.5",
+    "@red-cup-engineering/semiotic-hypertext-packet": "^0.4.0",
+    "@red-cup-engineering/xml-document-rendering-service": "^0.3.3",
+    "@red-cup-engineering/metrologic": "^0.22.4",
+    "@red-cup-engineering/computer-serialized-content-engineering-services-section": "^0.6.2"
   },
   "peerDependenciesMeta": {
     "@red-cup-engineering/computer-web-server": {
       "optional": true
     },
-    "@red-cup-engineering/markdown-engineering-services-section": {
+    "@red-cup-engineering/semiotic-hypertext-packet": {
       "optional": true
     },
-    "@red-cup-engineering/semiotic-hypertext-packet": {
+    "@red-cup-engineering/xml-document-rendering-service": {
+      "optional": true
+    },
+    "@red-cup-engineering/metrologic": {
+      "optional": true
+    },
+    "@red-cup-engineering/computer-serialized-content-engineering-services-section": {
       "optional": true
     }
   },
   "devDependencies": {
-    "@red-cup-engineering/computer-web-server": "0.7.2",
-    "@red-cup-engineering/markdown-engineering-services-section": "0.5.7-dev.0",
-    "@red-cup-engineering/semiotic-hypertext-packet": "0.4.0",
-    "@red-cup-engineering/xml-document-rendering-service": "0.3.0",
-    "@red-cup-engineering/computer-serialized-content-engineering-services-section": "0.3.0",
-    "@red-cup-engineering/metrologic": "0.17.0",
+    "@red-cup-engineering/computer-web-server": "^0.7.5",
+    "@red-cup-engineering/markdown-engineering-services-section": "^0.5.9",
+    "@red-cup-engineering/semiotic-hypertext-packet": "^0.4.0",
+    "@red-cup-engineering/xml-document-rendering-service": "^0.3.3",
+    "@red-cup-engineering/computer-serialized-content-engineering-services-section": "^0.6.2",
+    "@red-cup-engineering/metrologic": "^0.22.4",
     "esbuild": "0.28.1",
-    "@red-cup-engineering/computer-data-engineering-services-section": "0.2.0",
+    "@red-cup-engineering/computer-data-engineering-services-section": "^0.7.4",
     "playwright": "1.64.1"
   }
 }

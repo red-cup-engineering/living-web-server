@@ -1,6 +1,6 @@
+import { canonicalOrigin } from "./origin.mjs";
 import { createTufteApplication, tuftePage } from "@red-cup-engineering/tufte/application/fetch";
 import { resolveTufteTheme } from "@red-cup-engineering/tufte/theme";
-import { canonicalOrigin } from "./origin.mjs";
 
 /**
  * Living Web Server: the live TUFTE application platform. Consumers provide
@@ -9,6 +9,7 @@ import { canonicalOrigin } from "./origin.mjs";
  *
  * MOOSE is one consumer; unrelated applications can contribute their pages.
  */
+
 const hidden = () => new Response(null, {
   status: 404, headers: { "cache-control": "no-store" },
 });
@@ -87,16 +88,13 @@ export function createLivingWebServer({
   }]);
   const app = createTufteApplication({
     pages: declarations, resources, enhance: false, document, markdown,
-  });
-  return Object.freeze({
-    origin: base,
-    // An unrecognized host must not use a different site's content authority.
-    fetch(request, execution) {
-      if (new URL(request.url).origin !== base) {
+    // Reject a foreign origin in the original compiled engine, before authority
+    // or source callbacks, on both Fetch and the optional Node transport.
+    onRequest(context) {
+      if (context.url.origin !== base) {
         return new Response(null, { status: 421, headers: { "cache-control": "no-store" } });
       }
-      return app.fetch(request, execution);
     },
   });
+  return Object.freeze({ origin: base, specification: app.specification, fetch: app.fetch });
 }
-

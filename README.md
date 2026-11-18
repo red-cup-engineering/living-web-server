@@ -12,8 +12,6 @@ with the original TUFTE application. TUFTE owns the page model, rendering,
 representation negotiation and accessibility; the shared HTTP owner handles
 methods and response policy. The optional Computer Web Server owns Node
 transport. MOOSE, ASSIST and other applications can use the same Fetch entry.
-Applications with multiple independently authorized origins compose through
-the generic `./host` capability before reaching the Web Server listener.
 
 ## Current source and authority
 
@@ -37,6 +35,50 @@ const app = createLivingWebServer({
 });
 ```
 
+## Authorized source-read workload
+
+Run `npm run --silent measure:source-read` from this checkout or the unpacked
+package with its native dependencies installed. The versioned JSON output
+reports request counts, source-reader and authorization calls, body bytes,
+and per-request wall time and process CPU time for the original Fetch route.
+It uses one controlled publication and live-readings fixture across HTML,
+JSON, and RSS, not a cache or simulated renderer.
+
+A cold-authorized sample is the first request that reaches each fixture
+representation's reader, not cold process or disk startup. The command checks
+private-to-public access, fresh source revisions, revocation and a foreign
+origin before accepting the measurements. For comparable timings, repeat on
+the same idle runtime and retain individual samples, source and dependency
+identities. The in-process body counts are not network or compressed bytes;
+no physical power, energy, or carbon is measured. The optional Node listener
+and any real application's production reading require separate evidence.
+See [the source-read requirement](https://github.com/red-cup-engineering/living-web-server/issues/9).
+
+To compare the original inline and shared house-theme paths, run
+`npm run --silent measure:source-read -- --compare-house-theme`. The same
+fixtures use TUFTE's authored Early Mac theme in both runs. The candidate
+uses the original renderer's stylesheet option and a separately authorized
+CSS resource; it fetches that stylesheet after every HTML response, without
+simulating a browser cache. It checks ordered CSS (including nonce layout
+rules), unchanged page bodies and skip links, the same JSON source model and
+RSS bytes, and the same source freshness and denial invariants. TUFTE's JSON
+shell fingerprint correctly changes because document options have changed. The report includes
+total requests and bytes, first-page-plus-stylesheet bytes, and a separate
+body-only projection if repeat stylesheet responses were 304. The 304
+projection is not executed, does not remove any requests, and does not
+represent CAIRN's installed stylesheet route or a browser cache trace.
+No deployed/default behavior is changed.
+
+With the original optional Computer Web Server provider installed, add
+`--node-wire` to either command. The isolated fixture uses that provider's
+compiled Web and Systems listener on an ephemeral loopback port, with a new
+HTTP/1 connection per request. It records received HTTP response bytes
+(including headers and framing, but not TCP/IP overhead) and delivered body
+bytes separately. It offers gzip and Brotli and reports the coding actually
+received, which may be none. This is not a TLS, proxy, browser or keep-alive
+benchmark; it does not commission a deployed Living Web host. The original
+listener is closed even if the fixture fails.
+
 ## Optional authorized Markdown
 
 ```js
@@ -46,10 +88,10 @@ import { createLivingWebMarkdownProjection } from '@red-cup-engineering/living-w
 const representation = {markdown: createLivingWebMarkdownProjection()};
 ```
 
-Install the exact optional Markdown peer declared by the manifest when choosing
-this export. The helper is the original TUFTE capability, re-exported under this
-application boundary. Living Web Server adds no converter, HTTP parser, cache,
-source mirror or read privilege. HTML/JSON remain available; Markdown is off
+When enabling this export, install the Markdown codec version admitted by the
+selected TUFTE package's optional peer dependency. TUFTE owns that contract;
+Living Web Server adds no converter, HTTP parser, cache, source mirror or read
+privilege. HTML/JSON remain available; Markdown is off
 by default. Set `markdown: false` on an individual page to keep it off there.
 
 The native negotiator handles `Accept: text/markdown`, weighted preferences,
@@ -106,80 +148,15 @@ document: {theme: {name: 'field-manual', themeColor: '#775015',
 
 Edge and Cloudflare consumers use `./fetch`; they need no Node HTTP listener.
 An application importing the root for `serveLivingWebServer` installs the
-optional `@red-cup-engineering/computer-web-server@0.7.2` peer and calls
+optional `@red-cup-engineering/computer-web-server@0.6.2` peer and calls
 `serveLivingWebServer(app, {hostname, port, trustProxy})`. Trusted proxy input
 requires the original loopback listener. The optional Markdown export also
 imports no Node transport or filesystem source reader.
-The selected Web Server peer declares Node 24.2.0 or newer for hosted Node
-operation; the portable Fetch entry retains its own manifest requirements.
 
 Native receiving commands and the exact supplier selections are in
 `package.json`. The original ASSIST RFC 6068 contact link remains ordinary
 source-owned content; neither this application nor the Markdown projection
 sends email.
-
-## Hosting independent applications
-
-`./host` provides generic application hosting downstream of Computer Web
-Server. MOOSE supplies MUD/social behavior and ActivityPub supplies federation
-behavior; Living Web Server owns admission and composition of their Fetch
-applications. It imports neither consumer. This keeps one generic hosting
-implementation while retaining each application's source and authorization.
-
-```js
-import {
-  createLivingWebHost, serveLivingWebHost,
-} from '@red-cup-engineering/living-web-server/host';
-
-const host = createLivingWebHost({applications: [
-  {origin: 'https://science.example', fetch: scienceApplication.fetch},
-  {origin: 'https://engineering.example', fetch: engineeringApplication.fetch},
-]});
-
-// The original Node listener sits behind a trusted TLS ingress on loopback.
-const running = await serveLivingWebHost(host, {
-  hostname: '127.0.0.1', port: 8000, trustProxy: true,
-});
-// The commissioning application owns worker start/stop and custody release.
-// await running.close();
-```
-
-Pass an existing `{origin, fetch}` application directly when its Fetch method
-uses `this`. Admission captures the function with its original receiver.
-
-### Hosting contract and ownership
-
-| Boundary | Contract |
-| --- | --- |
-| Construction | `createLivingWebHost({applications})` requires a nonempty array of applications, each with an origin string and Fetch function. All origins are admitted before any application is invoked. |
-| Identity | The existing Living Web origin rule accepts HTTPS and loopback HTTP, rejects credentials, non-root paths, query strings and fragments, and normalizes to `URL.origin`. Canonically duplicate origins refuse. |
-| Result | A frozen `{origins, fetch}` contains frozen admitted origins and the original Web Server's compiled Fetch entry. Later mutations of the input list, origin or Fetch property cannot rebind a route. Applications may continue reading their own changing source. |
-| Dispatch | The original Web Server owns resources, method handling, response policy and failures. An exact origin selects one application's Fetch handler. An unknown origin returns 421 with `Cache-Control: no-store` before any source callback; no default site exists. |
-| Context | The original Request reaches the selected source. The Web Server's supported execution context is preserved: capabilities by identity, remote address, HTTP version, and request time/nonce through their supplier functions. Arbitrary extra execution fields are not part of the Web Server contract. |
-| Transport | `serveLivingWebHost(host, {hostname, port, trustProxy})` requires the original admitted host. It loads and invokes Computer Web Server's Node listener with the retained compiled specification, returning the original `{server, port, address, close}` lifecycle. Port zero permits an ephemeral listener. |
-| Proxy trust | `trustProxy` is a boolean and may be true only for a loopback listener. Without that policy, the upstream Node adapter ignores forwarded host/protocol headers. With it, the upstream adapter reconstructs the public origin; unregistered origins still refuse. |
-| Application lifetime | The caller owns protocol-specific worker startup, rollback, state and custody. Hosting does not start delivery queues, infer an identity from content, acquire data rights, or release a supplied application's storage. |
-
-The `./host` module does not load TUFTE or Node transport during import or
-Fetch application construction. It selects the exact optional Web Server peer
-already declared in the manifest; calling `serveLivingWebHost` loads that
-peer's Node adapter. Existing `./fetch` consumers remain portable and do not
-acquire a mandatory Node dependency. `serveLivingWebServer` now composes its
-single application through the same host, supplying the compiled specification
-that the original Node listener requires.
-
-The design keeps HTTP routing and listener mechanics in their existing owner.
-Duplicating an origin router or listener in MOOSE would split the hosting
-contract, while moving ActivityPub into Living Web Server would make a generic
-upstream depend on its specialized consumer. A generic host with supplied Fetch
-applications meets the dependency direction without either new ownership edge.
-
-`node --test test/host.test.mjs test/transport-boundary.test.mjs` receives
-construction refusals, origin isolation, mutation resistance, supported context,
-request methods and bodies, a real shared Node listener, proxy admission and
-shutdown. `test/application.test.mjs` also receives the existing single-site
-listener. Repository tests establish source behavior; package publication,
-installed consumer cutover and public deployment are separate verification.
 
 
 ## Recoverable image resources
@@ -232,3 +209,22 @@ The example and its browser receiver use the declared development providers.
 They perform no installation or external fetch. Build receipts record source
 modules, artifact identities and actual byte sizes. The receiver checks real
 downloads, refusals, mobile layout and JavaScript-disabled packet display.
+
+## Exact-origin application hosting
+
+The `./host` export supplies `createLivingWebHost({applications})` and
+`serveLivingWebHost(host, {hostname, port, trustProxy})`. Each application supplies
+its original `origin` and `fetch` method. Construction admits HTTPS or loopback
+HTTP origins, rejects canonical duplicates, and captures the bound handler.
+The existing Web/HTTP dispatcher selects exact origins; an unknown scheme,
+host or port returns 421 before any application callback. No default site exists.
+Supported request execution context reaches the original application. Source
+reading, authorization, federation routing, queues and custody remain with their
+respective application owners. The Node adapter loads only when serving starts;
+trusted forwarding requires a loopback listener. Close the returned listener
+before releasing application custody.
+
+This does not change the single-site compiled Fetch/Node entry. Native and packed
+host receiving is enrolled in `test/host.test.mjs`, alongside the existing
+Markdown representation receiver. Publication and downstream MOOSE receiving
+are separate from this source contract.

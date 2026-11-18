@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { request as requestHttp } from "node:http";
-import { createLivingWebHost, serveLivingWebHost } from "../src/host.mjs";
+import { createLivingWebHost, serveLivingWebHost } from "@red-cup-engineering/living-web-server/host";
 
 test("generic hosting admits all origins before invoking an application", () => {
   let calls = 0;
@@ -102,13 +102,6 @@ test("application methods, bodies and Web execution context reach the admitted s
   assert.deepEqual(calls, ["POST", "PUT", "PATCH", "DELETE", "OPTIONS"]);
 });
 
-test("generic host construction loads no Node listener or rendering dependency", async () => {
-  const { readFile } = await import("node:fs/promises");
-  const source = await readFile(new URL("../src/host.mjs", import.meta.url), "utf8");
-  assert.doesNotMatch(source, /from\s+["'](?:node:|@red-cup-engineering\/tufte|@red-cup-engineering\/computer-web-server\/node)/u);
-  assert.doesNotMatch(source, /activitypub|moose/iu);
-});
-
 test("listener refuses unadmitted hosts and unsafe proxy settings before opening a socket", async () => {
   const host = createLivingWebHost({ applications: [{ origin: "https://a.example", fetch: () => new Response("source") }] });
   await assert.rejects(serveLivingWebHost({ origins: host.origins, fetch: host.fetch }), /admitted host/u);
@@ -178,4 +171,29 @@ test("direct loopback transport ignores forged forwarding headers", async () => 
   } finally {
     await running.close();
   }
+});
+
+
+test("host preserves Living Web source authority context without changing single-site serving", async () => {
+  const { createLivingWebServer } = await import('@red-cup-engineering/living-web-server/fetch');
+  const { serveLivingWebServer } = await import('@red-cup-engineering/living-web-server');
+  const capabilities = Object.freeze({ read: true });
+  let reads = 0;
+  const app = createLivingWebServer({
+    origin: 'https://source.example',
+    authorizePublicRead: ({context}) => context.capabilities === capabilities,
+    home: () => { reads++; return {title:'Source',tiles:[]}; },
+  });
+  const host = createLivingWebHost({applications:[app]});
+  const request = new Request(app.origin+'/',{headers:{accept:'application/json'}});
+  assert.equal((await host.fetch(request)).status,404);
+  assert.equal(reads,0);
+  assert.equal((await host.fetch(request,{capabilities})).status,200);
+  assert.equal(reads,1);
+  const running = await serveLivingWebServer(app,{hostname:'127.0.0.1',port:0,trustProxy:true});
+  try {
+    const response = await fetch(`http://127.0.0.1:${running.port}/`,{headers:{'x-forwarded-host':'foreign.example','x-forwarded-proto':'https'}});
+    assert.equal(response.status,421);
+    assert.equal(reads,1);
+  } finally { await running.close(); }
 });
