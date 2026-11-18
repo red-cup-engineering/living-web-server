@@ -35,7 +35,6 @@
   },
   "peerDependencies": {
     "@red-cup-engineering/computer-web-server": "^0.7.5",
-    "@red-cup-engineering/markdown-engineering-services-section": "^0.5.9",
     "@red-cup-engineering/semiotic-hypertext-packet": "^0.4.0",
     "@red-cup-engineering/xml-document-rendering-service": "^0.3.3",
     "@red-cup-engineering/metrologic": "^0.22.4",
@@ -43,9 +42,6 @@
   },
   "peerDependenciesMeta": {
     "@red-cup-engineering/computer-web-server": {
-      "optional": true
-    },
-    "@red-cup-engineering/markdown-engineering-services-section": {
       "optional": true
     },
     "@red-cup-engineering/semiotic-hypertext-packet": {
