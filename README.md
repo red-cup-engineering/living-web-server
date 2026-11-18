@@ -35,6 +35,50 @@ const app = createLivingWebServer({
 });
 ```
 
+## Authorized source-read workload
+
+Run `npm run --silent measure:source-read` from this checkout or the unpacked
+package with its native dependencies installed. The versioned JSON output
+reports request counts, source-reader and authorization calls, body bytes,
+and per-request wall time and process CPU time for the original Fetch route.
+It uses one controlled publication and live-readings fixture across HTML,
+JSON, and RSS, not a cache or simulated renderer.
+
+A cold-authorized sample is the first request that reaches each fixture
+representation's reader, not cold process or disk startup. The command checks
+private-to-public access, fresh source revisions, revocation and a foreign
+origin before accepting the measurements. For comparable timings, repeat on
+the same idle runtime and retain individual samples, source and dependency
+identities. The in-process body counts are not network or compressed bytes;
+no physical power, energy, or carbon is measured. The optional Node listener
+and any real application's production reading require separate evidence.
+See [the source-read requirement](https://github.com/red-cup-engineering/living-web-server/issues/9).
+
+To compare the original inline and shared house-theme paths, run
+`npm run --silent measure:source-read -- --compare-house-theme`. The same
+fixtures use TUFTE's authored Early Mac theme in both runs. The candidate
+uses the original renderer's stylesheet option and a separately authorized
+CSS resource; it fetches that stylesheet after every HTML response, without
+simulating a browser cache. It checks ordered CSS (including nonce layout
+rules), unchanged page bodies and skip links, the same JSON source model and
+RSS bytes, and the same source freshness and denial invariants. TUFTE's JSON
+shell fingerprint correctly changes because document options have changed. The report includes
+total requests and bytes, first-page-plus-stylesheet bytes, and a separate
+body-only projection if repeat stylesheet responses were 304. The 304
+projection is not executed, does not remove any requests, and does not
+represent CAIRN's installed stylesheet route or a browser cache trace.
+No deployed/default behavior is changed.
+
+With the original optional Computer Web Server provider installed, add
+`--node-wire` to either command. The isolated fixture uses that provider's
+compiled Web and Systems listener on an ephemeral loopback port, with a new
+HTTP/1 connection per request. It records received HTTP response bytes
+(including headers and framing, but not TCP/IP overhead) and delivered body
+bytes separately. It offers gzip and Brotli and reports the coding actually
+received, which may be none. This is not a TLS, proxy, browser or keep-alive
+benchmark; it does not commission a deployed Living Web host. The original
+listener is closed even if the fixture fails.
+
 ## Optional authorized Markdown
 
 ```js
