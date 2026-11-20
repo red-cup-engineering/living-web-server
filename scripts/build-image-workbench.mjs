@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { sha256Hex } from "@red-cup-engineering/semiotic-content-address-system";
 /** Build the original public-module example into one offline HTML artifact.
  * Install this package's declared development dependencies, then run:
  * node scripts/build-image-workbench.mjs [output.html]
@@ -14,7 +15,7 @@ import { read as readPacket } from '@red-cup-engineering/semiotic-hypertext-pack
 import { formPacketJsonCloudEvent, readPacketJsonCloudEvent } from '@red-cup-engineering/semiotic-hypertext-packet/json-event';
 
 const directory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const sha256 = value => createHash('sha256').update(value).digest('hex');
+
 const dataUrl = (bytes, mediaType) => `data:${mediaType};base64,${Buffer.from(bytes).toString('base64')}`;
 
 export async function buildImageWorkbench({ outputPath = resolve('dist/image-workbench.html') } = {}) {
@@ -61,14 +62,14 @@ export async function buildImageWorkbench({ outputPath = resolve('dist/image-wor
   const inputs = [];
   for (const [path, meta] of Object.entries(result.metafile.inputs)) {
     const source = await readFile(resolve(directory, path));
-    inputs.push({ path, bytes: source.byteLength, sha256: sha256(source), imports: meta.imports.map(item => ({ path: item.path, kind: item.kind, external: item.external === true })) });
+    inputs.push({ path, bytes: source.byteLength, sha256: sha256Hex(source), imports: meta.imports.map(item => ({ path: item.path, kind: item.kind, external: item.external === true })) });
   }
   const receipt = { kind: 'living-web.image-workbench-build', registryRequests: false,
-    outputPath, bytes: Buffer.byteLength(html), sha256: sha256(html), sourceId: fixture.projection.sourceId,
-    artifacts: { svg: { bytes: fixture.svgBytes.byteLength, ni: fixture.svgMaterial.ni, sha256: sha256(fixture.svgBytes) },
-      png: { bytes: fixture.png.byteLength, ni: fixture.pngMaterial.ni, sha256: sha256(fixture.png) },
-      packet: { bytes: fixture.packetBytes.byteLength, sha256: sha256(fixture.packetBytes) } },
-    cloudEvent: { bytes: eventBytes.byteLength, sha256: sha256(eventBytes), received: true },
+    outputPath, bytes: Buffer.byteLength(html), sha256: sha256Hex(html), sourceId: fixture.projection.sourceId,
+    artifacts: { svg: { bytes: fixture.svgBytes.byteLength, ni: fixture.svgMaterial.ni, sha256: sha256Hex(fixture.svgBytes) },
+      png: { bytes: fixture.png.byteLength, ni: fixture.pngMaterial.ni, sha256: sha256Hex(fixture.png) },
+      packet: { bytes: fixture.packetBytes.byteLength, sha256: sha256Hex(fixture.packetBytes) } },
+    cloudEvent: { bytes: eventBytes.byteLength, sha256: sha256Hex(eventBytes), received: true },
     optical: { bytes: initial.bytes.byteLength, size: initial.symbol.size, capacity: initial.symbol.profile.maxPayloadBytes },
     compiler: 'esbuild', inputs,
   };

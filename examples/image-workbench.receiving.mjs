@@ -1,3 +1,4 @@
+import { sha256Hex } from "@red-cup-engineering/semiotic-content-address-system";
 /** Receive the built offline example through an actual browser and file transfer.
  * node examples/image-workbench.receiving.mjs built.html receiving-directory
  * Optional PLAYWRIGHT_MODULE_URL and WORKBENCH_BROWSER_EXECUTABLE select an
@@ -20,7 +21,7 @@ export async function receiveImageWorkbench({ htmlPath, outputDirectory, executa
   const { chromium } = await import(process.env.PLAYWRIGHT_MODULE_URL ?? 'playwright');
   const fixture = createImageWorkbenchFixture();
   const bytesOf = file => readFile(file);
-  const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+  
   const checks = [], errors = [], externalRequests = [], downloads = {};
   const browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
   const context = await browser.newContext({ viewport: { width: 1320, height: 980 }, acceptDownloads: true });
@@ -36,7 +37,7 @@ export async function receiveImageWorkbench({ htmlPath, outputDirectory, executa
     const waiting = page.waitForEvent('download'); await page.locator('#' + id).click();
     const received = await waiting, path = join(outputDirectory, name); await received.saveAs(path);
     assert.equal(await received.failure(), null);
-    const bytes = await bytesOf(path); downloads[name] = { path, bytes: bytes.byteLength, sha256: sha256(bytes) }; return bytes;
+    const bytes = await bytesOf(path); downloads[name] = { path, bytes: bytes.byteLength, sha256: sha256Hex(bytes) }; return bytes;
   };
   try {
     await waitReady();
@@ -134,7 +135,7 @@ export async function receiveImageWorkbench({ htmlPath, outputDirectory, executa
     checks.push('desktop and mobile views render without horizontal overflow');
     assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
     const receipt = { kind: 'living-web.image-workbench-browser-receiving', status: 'passed',
-      browser: await browser.version(), htmlPath, htmlSha256: sha256(await readFile(htmlPath)), checks, downloads, errors, externalRequests };
+      browser: await browser.version(), htmlPath, htmlSha256: sha256Hex(await readFile(htmlPath)), checks, downloads, errors, externalRequests };
     await writeFile(join(outputDirectory, 'receipt.json'), JSON.stringify(receipt, null, 2) + '\n');
     console.log(JSON.stringify({ checks: checks.length, status: receipt.status, browser: receipt.browser, htmlSha256: receipt.htmlSha256, outputDirectory }));
     return receipt;
