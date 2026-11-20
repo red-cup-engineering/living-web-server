@@ -29,7 +29,7 @@ export function createLivingWebHost({ applications } = {}) {
     throw new TypeError("Living Web host requires one or more Fetch applications");
   }
   const origins = new Set();
-  const admitted = applications.map(application => {
+  const validated = applications.map(application => {
     if (!application || typeof application !== "object" || Array.isArray(application) ||
         typeof application.origin !== "string" || typeof application.fetch !== "function") {
       throw new TypeError("Living Web host applications require an origin and fetch function");
@@ -44,7 +44,7 @@ export function createLivingWebHost({ applications } = {}) {
   const specification = Object.freeze({
     // Origin admission precedes path matching and every application callback.
     onRequest: context => origins.has(context.url.origin) ? undefined : misdirected(),
-    resources: Object.freeze(admitted.map(application => Object.freeze({
+    resources: Object.freeze(validated.map(application => Object.freeze({
       match: (_path, context) => context.url.origin === application.origin,
       handler: context => application.fetch(context.request, executionContext(context)),
     }))),

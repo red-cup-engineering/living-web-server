@@ -76,7 +76,7 @@ async function workload(theme, shared = false, nodeWire = false) {
   let stylesheet;
   const readCalls = [];
   let revision = 1;
-  let admitted = false;
+  let validated = false;
   const marker = (resource) => resource + '-source-v' + revision;
   const readPage = (resource) => () => {
     readCalls.push(resource);
@@ -94,7 +94,7 @@ async function workload(theme, shared = false, nodeWire = false) {
       authorizeCalls.push(resource);
       // The controlled CSS is a separately public, fixed presentation resource
       // with no reader data. Publishing it does not authorize any page.
-      return resource === themeAsset.resource ? shared : admitted;
+      return resource === themeAsset.resource ? shared : validated;
     },
     home: readPage('publication'),
     pages: [{
@@ -178,7 +178,7 @@ async function workload(theme, shared = false, nodeWire = false) {
     // Each application is created only once. Cold denotes the first authorized request per
     // resource/representation that reaches the reader, not cold Node startup or cold disk.
     for (const request of requests) samples.push(await observe(request, 'private', 1, 404));
-    admitted = true;
+    validated = true;
     let assetVisits = 0;
     const authorized = async (phase, index) => {
       for (const request of requests) {
@@ -193,7 +193,7 @@ async function workload(theme, shared = false, nodeWire = false) {
     for (let i = 1; i <= warmRounds; i++) await authorized('warm-authorized', i);
     revision += 1;
     await authorized('changed-source', 1);
-    admitted = false;
+    validated = false;
     for (const request of requests) samples.push(await observe(request, 'revoked', 1, 404));
     for (const request of requests) samples.push(await observe(request, 'foreign-origin', 1, 421));
 

@@ -63,7 +63,7 @@ export async function buildImageWorkbench({ outputPath = resolve('dist/image-wor
     const source = await readFile(resolve(directory, path));
     inputs.push({ path, bytes: source.byteLength, sha256: sha256(source), imports: meta.imports.map(item => ({ path: item.path, kind: item.kind, external: item.external === true })) });
   }
-  const receipt = { kind: 'living-web.image-workbench-build', registryRequests: false,
+  const record = { kind: 'living-web.image-workbench-build', registryRequests: false,
     outputPath, bytes: Buffer.byteLength(html), sha256: sha256(html), sourceId: fixture.projection.sourceId,
     artifacts: { svg: { bytes: fixture.svgBytes.byteLength, ni: fixture.svgMaterial.ni, sha256: sha256(fixture.svgBytes) },
       png: { bytes: fixture.png.byteLength, ni: fixture.pngMaterial.ni, sha256: sha256(fixture.png) },
@@ -72,12 +72,12 @@ export async function buildImageWorkbench({ outputPath = resolve('dist/image-wor
     optical: { bytes: initial.bytes.byteLength, size: initial.symbol.size, capacity: initial.symbol.profile.maxPayloadBytes },
     compiler: 'esbuild', inputs,
   };
-  await writeFile(outputPath + '.receipt.json', JSON.stringify(receipt, null, 2) + '\n');
-  return receipt;
+  await writeFile(outputPath + '.receipt.json', JSON.stringify(record, null, 2) + '\n');
+  return record;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  const receipt = await buildImageWorkbench({ outputPath: process.argv[2] });
-  console.log(JSON.stringify({ outputPath: receipt.outputPath, bytes: receipt.bytes, sha256: receipt.sha256,
-    sourceId: receipt.sourceId, optical: receipt.optical, moduleCount: receipt.inputs.length }));
+  const record = await buildImageWorkbench({ outputPath: process.argv[2] });
+  console.log(JSON.stringify({ outputPath: record.outputPath, bytes: record.bytes, sha256: record.sha256,
+    sourceId: record.sourceId, optical: record.optical, moduleCount: record.inputs.length }));
 }
