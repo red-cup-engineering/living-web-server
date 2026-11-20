@@ -133,11 +133,11 @@ export async function receiveImageWorkbench({ htmlPath, outputDirectory, executa
     await page.screenshot({ path: join(outputDirectory, 'workbench-mobile.png'), fullPage: true });
     checks.push('desktop and mobile views render without horizontal overflow');
     assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
-    const record = { kind: 'living-web.image-workbench-browser-receiving', status: 'passed',
+    const receipt = { kind: 'living-web.image-workbench-browser-receiving', status: 'passed',
       browser: await browser.version(), htmlPath, htmlSha256: sha256(await readFile(htmlPath)), checks, downloads, errors, externalRequests };
-    await writeFile(join(outputDirectory, 'receipt.json'), JSON.stringify(record, null, 2) + '\n');
-    console.log(JSON.stringify({ checks: checks.length, status: record.status, browser: record.browser, htmlSha256: record.htmlSha256, outputDirectory }));
-    return record;
+    await writeFile(join(outputDirectory, 'receipt.json'), JSON.stringify(receipt, null, 2) + '\n');
+    console.log(JSON.stringify({ checks: checks.length, status: receipt.status, browser: receipt.browser, htmlSha256: receipt.htmlSha256, outputDirectory }));
+    return receipt;
   } finally { await context.close(); await browser.close(); }
 }
 
