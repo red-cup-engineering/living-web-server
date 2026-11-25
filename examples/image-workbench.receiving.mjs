@@ -5,7 +5,6 @@ import { sha256Hex } from "@red-cup-engineering/semiotic-content-address-system"
  * already installed browser test runtime; this program performs no installation.
  */
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';

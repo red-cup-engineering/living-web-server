@@ -5,7 +5,6 @@ import { sha256Hex } from "@red-cup-engineering/semiotic-content-address-system"
  * node scripts/build-image-workbench.mjs [output.html]
  */
 import { build } from 'esbuild';
-import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
